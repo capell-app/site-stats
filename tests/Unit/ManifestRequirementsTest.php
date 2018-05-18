@@ -68,13 +68,10 @@ it('does not promote its host-owned diagnostics as package screenshots', functio
 
 it('keeps Core-owned persistence and scheduling out of the package manifest', function (): void {
     $manifest = siteStatsJson('capell.json');
-    $overview = file_get_contents(dirname(__DIR__, 2) . '/docs/overview.md');
-
     expect(data_get($manifest, 'database.migrations'))->toBeFalse()
         ->and(data_get($manifest, 'commands.setup'))->toBeNull()
         ->and(data_get($manifest, 'contributionTraceability.runtimeIntegrations.metricCollectors'))
         ->toContain(ContentTotalsMetricsCollector::class)
-        ->and($overview)->toContain('Core persists samples in `metric_daily_rollups`')
-        ->and($overview)->toContain('Core owns and schedules the shared metrics rollup and retention jobs')
-        ->and($overview)->toContain('optional diagnostic host-integration capture');
+        ->and(data_get($manifest, 'description'))->toContain("Capell's typed metrics pipeline")
+        ->and(data_get($manifest, 'marketplace.description'))->toContain('Site Stats owns no dashboard or public UI');
 });
