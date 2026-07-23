@@ -22,13 +22,16 @@
     "providers": {
         "metadata": [],
         "install": [],
-        "runtime": [
-            "Capell\\SiteStats\\Providers\\SiteStatsServiceProvider"
-        ],
+        "runtime": ["Capell\\SiteStats\\Providers\\SiteStatsServiceProvider"],
         "admin": [],
         "frontend": []
     },
-    "contributes": [],
+    "contributes": [
+        {
+            "type": "health-check",
+            "class": "Capell\\SiteStats\\Health\\SiteStatsHealthCheck"
+        }
+    ],
     "database": {
         "migrations": false,
         "settings": false,
@@ -89,7 +92,15 @@
             "queueInvalidation": false
         }
     },
-    "healthChecks": [],
+    "healthChecks": [
+        {
+            "key": "site-stats.metrics-collector",
+            "label": "Metric Trends collector registration is available.",
+            "class": "Capell\\SiteStats\\Health\\SiteStatsHealthCheck",
+            "severity": "critical",
+            "surface": "admin"
+        }
+    ],
     "commercial": {
         "proposedLicense": "free",
         "requestedCertification": "first-party",

@@ -5,9 +5,15 @@ declare(strict_types=1);
 use Capell\Core\Data\Metrics\MetricSampleData;
 use Capell\Core\Data\Metrics\MetricScopeData;
 use Capell\Core\Enums\Metrics\MetricCollectionStatus;
+use Capell\SiteStats\Health\SiteStatsHealthCheck;
 use Capell\SiteStats\Metrics\ContentTotalsMetricsCollector;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
+
+it('reports a healthy collector contract', function (): void {
+    expect(SiteStatsHealthCheck::passed())->toBeTrue()
+        ->and(SiteStatsHealthCheck::runDiagnostics())->toHaveCount(1);
+});
 
 it('collects global content totals without exposing individual content', function (): void {
     $day = CarbonImmutable::parse('2026-07-21', 'UTC');
