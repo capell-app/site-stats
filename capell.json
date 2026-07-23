@@ -1,0 +1,115 @@
+{
+    "manifest-version": 3,
+    "name": "capell-app/site-stats",
+    "slug": "site-stats",
+    "displayName": "Metric Trends",
+    "kind": "package",
+    "capellApiVersion": "^1.0",
+    "version": "1.0.0",
+    "description": "Metric Trends provides privacy-safe content totals through Capell's typed metrics pipeline.",
+    "product": {
+        "group": "Capell Foundation",
+        "tier": "free",
+        "bundle": "foundation"
+    },
+    "namespace": "Capell\\SiteStats",
+    "surfaces": ["shared"],
+    "dependencies": {
+        "requires": ["capell-app/core"],
+        "supports": [],
+        "conflicts": []
+    },
+    "providers": {
+        "metadata": [],
+        "install": [],
+        "runtime": ["Capell\\SiteStats\\Providers\\SiteStatsServiceProvider"],
+        "admin": [],
+        "frontend": []
+    },
+    "contributes": [
+        {
+            "type": "health-check",
+            "class": "Capell\\SiteStats\\Health\\SiteStatsHealthCheck"
+        }
+    ],
+    "database": {
+        "migrations": false,
+        "settings": false,
+        "requiredTables": []
+    },
+    "commands": {
+        "install": null,
+        "setup": null,
+        "demo": null,
+        "doctor": null
+    },
+    "actions": [],
+    "settings": [],
+    "permissions": [],
+    "capabilities": ["privacy-safe-content-metrics"],
+    "security": {
+        "riskTier": "low",
+        "publicSurface": {
+            "routeNames": [],
+            "auth": "none",
+            "csrfExemptRoutes": [],
+            "signedRoutes": [],
+            "tokenizedRoutes": [],
+            "webhookRoutes": [],
+            "throttledRoutes": []
+        },
+        "sensitiveData": {
+            "encryptedFields": [],
+            "hashedTokenFields": [],
+            "redactedOutputClasses": [],
+            "plaintextJustifications": []
+        },
+        "publicOutput": {
+            "cacheSafe": true,
+            "forbidAuthoringSurface": true,
+            "forbidSecrets": true,
+            "forbidPublicBladeQueries": true
+        },
+        "externalHttpClients": {
+            "requiresTimeouts": false,
+            "requiresSecretRedaction": false,
+            "clients": []
+        },
+        "adminSurface": {
+            "authorization": "panel-auth",
+            "permissions": []
+        }
+    },
+    "performance": {
+        "frontendRenderBudgetMs": 0,
+        "adminQueryBudget": 2,
+        "cacheTags": ["site-stats"],
+        "cacheSafety": {
+            "cacheable": false,
+            "variesBy": [],
+            "sensitiveOutput": false,
+            "invalidationSources": [],
+            "queueInvalidation": false
+        }
+    },
+    "healthChecks": [
+        {
+            "key": "site-stats.metrics-collector",
+            "label": "Metric Trends collector registration is available.",
+            "class": "Capell\\SiteStats\\Health\\SiteStatsHealthCheck",
+            "severity": "critical",
+            "surface": "admin"
+        }
+    ],
+    "commercial": {
+        "proposedLicense": "free",
+        "requestedCertification": "first-party",
+        "supportPolicy": "capell-first-party",
+        "privateDocsRequested": false
+    },
+    "marketplace": {
+        "summary": "Privacy-safe content totals and trends built on Capell's typed metrics pipeline.",
+        "screenshots": [],
+        "categories": ["foundation", "analytics"]
+    }
+}
