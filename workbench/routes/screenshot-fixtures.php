@@ -87,19 +87,20 @@ Route::get('/screenshot-fixtures/site-stats/metrics-dashboard', static function 
         $rollup->execute($firstDay->addDays($dayOffset)->toDateString(), [$scope]);
     }
 
-    $userModel = (string) config('auth.providers.users.model');
-    $email = (string) env('CAPELL_SCREENSHOT_ADMIN_EMAIL', 'admin@example.com');
-    /** @var Authenticatable $user */
-    $user = $userModel::query()->where('email', $email)->firstOrFail();
+    $configuredEmail = config('capell.screenshot_admin_email', 'admin@example.com');
+    $email = is_string($configuredEmail) ? $configuredEmail : 'admin@example.com';
+    $user = auth()->getProvider()->retrieveByCredentials(['email' => $email]);
+
+    abort_unless($user instanceof Authenticatable, 404);
 
     auth()->login($user);
 
     if (request()->hasSession()) {
         request()->session()->regenerate();
-        request()->session()->put(
-            'password_hash_' . ((string) config('auth.defaults.guard', 'web')),
-            $user->getAuthPassword(),
-        );
+        $configuredGuard = config('auth.defaults.guard', 'web');
+        $guard = is_string($configuredGuard) ? $configuredGuard : 'web';
+
+        request()->session()->put('password_hash_' . $guard, $user->getAuthPassword());
     }
 
     return redirect()->route('filament.admin.pages.site-admin-metrics');
