@@ -59,6 +59,7 @@ it('collects global content totals without exposing individual content', functio
         'theme_id' => $themeId,
         'created_at' => $day->subDay(),
         'updated_at' => $day->subDay(),
+        'deleted_at' => $day->addDay(),
     ]);
     DB::table('sites')->insert([
         'name' => 'Metrics After Cutoff',
@@ -68,6 +69,15 @@ it('collects global content totals without exposing individual content', functio
         'created_at' => $day->addDay(),
         'updated_at' => $day->addDay(),
     ]);
+    DB::table('sites')->insert([
+        'name' => 'Metrics Deleted Before Cutoff',
+        'language_id' => $languageId,
+        'blueprint_id' => $siteBlueprintId,
+        'theme_id' => $themeId,
+        'created_at' => $day->subDay(),
+        'updated_at' => $day->subDay(),
+        'deleted_at' => $day,
+    ]);
     $layoutId = DB::table('layouts')->insertGetId([
         'name' => 'Metrics layout',
         'site_id' => $siteId,
@@ -76,14 +86,19 @@ it('collects global content totals without exposing individual content', functio
         'updated_at' => $day->subYear(),
     ]);
 
-    foreach ([1, 2, 3, 4] as $position) {
+    foreach ([1, 2, 3, 4, 5] as $position) {
         DB::table('pages')->insert([
             'name' => 'Metrics page ' . $position,
             'blueprint_id' => $pageBlueprintId,
             'layout_id' => $layoutId,
             'site_id' => $siteId,
-            'created_at' => $position === 4 ? $day->addDay() : $day->subDay(),
+            'created_at' => $position === 5 ? $day->addDay() : $day->subDay(),
             'updated_at' => $day->subDay(),
+            'deleted_at' => match ($position) {
+                3 => $day->addDay(),
+                4 => $day,
+                default => null,
+            },
             '_lft' => ($position * 2) - 1,
             '_rgt' => $position * 2,
             'depth' => 0,

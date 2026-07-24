@@ -1,0 +1,33 @@
+{
+    "package": "site-stats",
+    "composerName": "capell-app/site-stats",
+    "generatedFor": "deployment-screenshot-runner",
+    "requiresInstalledPackage": true,
+    "composerRequires": ["capell-app/site-stats"],
+    "outputDirectory": "packages/site-stats/docs/screenshots",
+    "auditStatus": "authentic-host-integration",
+    "auditReason": "Captured from the real Core Site Metrics dashboard after Site Stats seeded and rolled up multiple UTC days of page and site totals.",
+    "entries": [
+        {
+            "id": "site-stats-metrics-dashboard",
+            "title": "Site Stats content totals in the Core metrics dashboard.",
+            "package": "site-stats",
+            "surface": "admin",
+            "targetType": "frontend-url",
+            "target": "/screenshot-fixtures/site-stats/metrics-dashboard",
+            "url": "/screenshot-fixtures/site-stats/metrics-dashboard",
+            "waitFor": "[data-testid=\"capell-site-admin-metrics\"]",
+            "colorSchemes": ["light"],
+            "fullPage": true,
+            "required": true,
+            "screenshotPath": "packages/site-stats/docs/screenshots/site-stats-metrics-dashboard.png",
+            "fixtureKind": "authentic-host-integration",
+            "notes": "Authentic host-integration evidence captured from the consuming Core metrics dashboard with capell-app/site-stats installed. The fixture seeds multiple UTC days of Core content records and runs RollupDailyMetricsAction so ContentTotalsMetricsCollector produces non-flat page and site trends. The dashboard remains host-owned and is not a package-owned Site Stats UI.",
+            "useCase": "An administrator verifies that the installed Site Stats collector supplies page and site inventory history to Capell's shared metrics dashboard.",
+            "covers": [
+                "packages/site-stats/src/Metrics/ContentTotalsMetricsCollector.php"
+            ]
+        }
+    ],
+    "notes": "The promoted screenshot is authentic integration evidence from Core's host-owned metrics dashboard; Site Stats itself does not ship a dashboard."
+}
