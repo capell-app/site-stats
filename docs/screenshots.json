@@ -5,8 +5,8 @@
     "requiresInstalledPackage": true,
     "composerRequires": ["capell-app/site-stats"],
     "outputDirectory": "packages/site-stats/docs/screenshots",
-    "auditStatus": "authentic-host-surface-required",
-    "auditReason": "Site Stats owns a shared metrics collector rather than a UI. Marketplace evidence must capture its real series through a consuming Core metrics dashboard.",
+    "auditStatus": "pending-authentic-host-surface",
+    "auditReason": "Site Stats owns a shared metrics collector rather than a UI. This prospective target remains unfulfilled until its real series can be captured through a consuming Core metrics dashboard.",
     "entries": [
         {
             "id": "site-stats-metrics-dashboard",
@@ -18,15 +18,15 @@
             "url": "/screenshot-fixtures/site-stats/metrics-dashboard",
             "waitFor": ".site-stats-metrics-dashboard",
             "colorSchemes": ["light"],
-            "required": true,
+            "required": false,
             "screenshotPath": "packages/site-stats/docs/screenshots/site-stats-metrics-dashboard.png",
             "fixtureKind": "authentic-host-integration",
-            "notes": "Capture from a consuming Core metrics dashboard with capell-app/site-stats installed. Seed multiple UTC days of Core metric samples collected by ContentTotalsMetricsCollector so both content.pages_total and content.sites_total show non-flat, labelled trends. The dashboard is host-owned; do not describe it as a package-owned Site Stats UI and do not substitute generic hero or catalogue artwork.",
+            "notes": "Prospective, currently unfulfilled evidence target. Capture only from a consuming Core metrics dashboard with capell-app/site-stats installed. Seed multiple UTC days of Core metric samples collected by ContentTotalsMetricsCollector so both content.pages_total and content.sites_total show non-flat, labelled trends. The dashboard is host-owned; do not describe it as a package-owned Site Stats UI and do not substitute generic hero or catalogue artwork.",
             "useCase": "An administrator verifies that the installed Site Stats collector supplies page and site inventory history to Capell's shared metrics dashboard.",
             "covers": [
                 "packages/site-stats/src/Metrics/ContentTotalsMetricsCollector.php"
             ]
         }
     ],
-    "notes": "The contract requires authentic integration evidence. No screenshot is claimed until the runner captures the seeded consuming dashboard and writes the declared output file."
+    "notes": "No screenshot is currently claimed or promoted. This optional contract records the authentic integration evidence required before Site Stats can add Marketplace media."
 }
