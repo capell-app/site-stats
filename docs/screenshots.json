@@ -16,7 +16,7 @@
             "targetType": "frontend-url",
             "target": "/screenshot-fixtures/site-stats/metrics-dashboard",
             "url": "/screenshot-fixtures/site-stats/metrics-dashboard",
-            "waitFor": ".site-stats-metrics-dashboard",
+            "waitFor": "[data-testid=\"capell-site-admin-metrics\"]",
             "colorSchemes": ["light"],
             "required": false,
             "screenshotPath": "packages/site-stats/docs/screenshots/site-stats-metrics-dashboard.png",
