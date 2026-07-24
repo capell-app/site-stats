@@ -76,8 +76,20 @@ final class ContentTotalsMetricsCollector implements CollectsDailyMetrics
 
         $endOfDay = CarbonImmutable::parse($day, 'UTC')->endOfDay();
         $values = [
-            'content.pages_total' => Page::query()->withTrashed()->where('created_at', '<=', $endOfDay)->count(),
-            'content.sites_total' => Site::query()->withTrashed()->where('created_at', '<=', $endOfDay)->count(),
+            'content.pages_total' => Page::query()
+                ->withTrashed()
+                ->where('created_at', '<=', $endOfDay)
+                ->where(static function ($query) use ($endOfDay): void {
+                    $query->whereNull('deleted_at')->orWhere('deleted_at', '>', $endOfDay);
+                })
+                ->count(),
+            'content.sites_total' => Site::query()
+                ->withTrashed()
+                ->where('created_at', '<=', $endOfDay)
+                ->where(static function ($query) use ($endOfDay): void {
+                    $query->whereNull('deleted_at')->orWhere('deleted_at', '>', $endOfDay);
+                })
+                ->count(),
         ];
         $definitions = collect($this->definitions())->keyBy(
             static fn (MetricDefinitionData $definition): string => $definition->identity->metricKey,

@@ -12,13 +12,13 @@ The package collects content inventory, not visitor analytics. It does not track
 
 Site Stats has no package-owned screen, navigation item, setting, or public output. Its figures appear only when a consuming Core metrics dashboard or another installed package chooses to display the registered series.
 
-The prospective Marketplace evidence target is Site Stats data inside a consuming Core metrics dashboard. No such screenshot is currently promoted. If captured, it will be evidence of the integration, not a claim that Site Stats ships that dashboard.
+The Marketplace screenshot shows Site Stats data inside Core's consuming metrics dashboard. It is authentic integration evidence, not a claim that Site Stats ships that dashboard.
 
 ## How the totals work
 
 - **Pages total** counts page records created on or before the end of the selected UTC day.
 - **Sites total** counts site records created on or before the end of the selected UTC day.
-- Soft-deleted records remain in both totals.
+- Records deleted on or before the selected day are excluded; records deleted later remain in that historical day's totals.
 - Both figures are global across the installation, not filtered to one site.
 
 Backfilled days use each record's creation date, so the series can show when the content inventory grew. A missing day remains missing rather than being silently treated as zero.

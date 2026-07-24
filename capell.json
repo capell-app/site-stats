@@ -110,7 +110,13 @@
     "marketplace": {
         "summary": "Privacy-safe content totals and trends built on Capell's typed metrics pipeline.",
         "description": "Registers global daily page and site totals with Capell's shared typed metrics pipeline. Site Stats owns no dashboard or public UI; installed Core metrics consumers can display the collected and backfilled series.",
-        "screenshots": [],
+        "screenshots": [
+            {
+                "path": "docs/screenshots/site-stats-metrics-dashboard.png",
+                "alt": "Core Site Metrics dashboard showing page and site totals collected by Site Stats",
+                "caption": "Site Stats content totals in the Core metrics dashboard"
+            }
+        ],
         "categories": ["foundation", "analytics"]
     }
 }

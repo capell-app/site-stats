@@ -29,8 +29,8 @@ Status details:
 
 The `content_totals` collector provides:
 
-- `content.pages_total`: all page records created by the end of the requested UTC day, including soft-deleted records.
-- `content.sites_total`: all site records created by the end of the requested UTC day, including soft-deleted records.
+- `content.pages_total`: page records created by the end of the requested UTC day and not yet deleted on that day.
+- `content.sites_total`: site records created by the end of the requested UTC day and not yet deleted on that day.
 
 Both are integer gauges at global scope. They are classified as internal, visible to site administrators, sourced from Core content tables, and support backfill. Collection returns `Unsupported` when no global scope is requested.
 
@@ -38,7 +38,7 @@ Both are integer gauges at global scope. They are classified as internal, visibl
 
 Screenshot contract: [`docs/screenshots.json`](docs/screenshots.json).
 
-The prospective screenshot target is an authentic capture of a consuming Core metrics dashboard with Site Stats installed and seeded daily samples available. It is not a Site Stats page or illustrative marketplace artwork. The target remains unfulfilled and is not Marketplace media until that capture exists and has been reviewed.
+The promoted screenshot is an authentic capture of a consuming Core metrics dashboard with Site Stats installed and genuine daily rollups available. It is evidence of the integration, not a Site Stats page or illustrative marketplace artwork.
 
 ## Install Impact
 
@@ -57,7 +57,7 @@ The prospective screenshot target is an authentic capture of a consuming Core me
 - Installing Site Stats registers the collector but does not create a dashboard.
 - A consuming Core metrics surface needs collected or backfilled samples before it can render a useful trend.
 - The collector currently supports only the global scope; do not present its values as site-scoped totals.
-- Totals include soft-deleted records because they describe records created by the end of each day, not currently active content.
+- Pages and sites deleted on or before the requested day are excluded; later deletions do not rewrite historical totals.
 
 ## Quick Start
 

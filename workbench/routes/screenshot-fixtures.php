@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 use Capell\Core\Actions\Metrics\RollupDailyMetricsAction;
 use Capell\Core\Data\Metrics\MetricScopeData;
+use Capell\Core\Models\MetricCollectionRun;
+use Capell\Core\Models\MetricDailyRollup;
 use Capell\Core\Models\Page;
 use Capell\Core\Models\Site;
 use Carbon\CarbonImmutable;
@@ -12,6 +14,11 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/screenshot-fixtures/site-stats/metrics-dashboard', static function (): RedirectResponse {
+    abort_unless(
+        app()->isLocal() && in_array(request()->ip(), ['127.0.0.1', '::1'], true),
+        404,
+    );
+
     $firstDay = CarbonImmutable::now('UTC')->startOfDay()->subDays(6);
     $siteDays = [0, 3, 5];
     $sites = [];
@@ -67,6 +74,15 @@ Route::get('/screenshot-fixtures/site-stats/metrics-dashboard', static function 
     $scope = MetricScopeData::global('UTC');
     $rollup = app(RollupDailyMetricsAction::class);
 
+    MetricDailyRollup::query()
+        ->where('owner_package', 'capell-app/site-stats')
+        ->where('collector_key', 'content_totals')
+        ->delete();
+    MetricCollectionRun::query()
+        ->where('owner_package', 'capell-app/site-stats')
+        ->where('collector_key', 'content_totals')
+        ->delete();
+
     for ($dayOffset = 0; $dayOffset <= 6; $dayOffset++) {
         $rollup->execute($firstDay->addDays($dayOffset)->toDateString(), [$scope]);
     }
@@ -87,4 +103,5 @@ Route::get('/screenshot-fixtures/site-stats/metrics-dashboard', static function 
     }
 
     return redirect()->route('filament.admin.pages.site-admin-metrics');
-})->name('screenshot-fixtures.site-stats.metrics-dashboard');
+})
+    ->name('screenshot-fixtures.site-stats.metrics-dashboard');
