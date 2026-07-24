@@ -12,7 +12,7 @@ The package collects content inventory, not visitor analytics. It does not track
 
 Site Stats has no package-owned screen, navigation item, setting, or public output. Its figures appear only when a consuming Core metrics dashboard or another installed package chooses to display the registered series.
 
-The Marketplace screenshot therefore shows Site Stats data inside a consuming Core metrics dashboard. It is evidence of the integration, not a claim that Site Stats ships that dashboard.
+The prospective Marketplace evidence target is Site Stats data inside a consuming Core metrics dashboard. No such screenshot is currently promoted. If captured, it will be evidence of the integration, not a claim that Site Stats ships that dashboard.
 
 ## How the totals work
 

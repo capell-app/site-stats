@@ -38,7 +38,7 @@ Both are integer gauges at global scope. They are classified as internal, visibl
 
 Screenshot contract: [`docs/screenshots.json`](docs/screenshots.json).
 
-The required screenshot is an authentic capture of a consuming Core metrics dashboard with Site Stats installed and seeded daily samples available. It is not a Site Stats page or illustrative marketplace artwork.
+The prospective screenshot target is an authentic capture of a consuming Core metrics dashboard with Site Stats installed and seeded daily samples available. It is not a Site Stats page or illustrative marketplace artwork. The target remains unfulfilled and is not Marketplace media until that capture exists and has been reviewed.
 
 ## Install Impact
 
