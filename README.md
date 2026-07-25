@@ -4,11 +4,13 @@
 
 ## What This Plugin Adds
 
-Site Stats is an **Available**, **No schema impact** Capell package in the **Capell Foundation** product group. It ships as `capell-app/site-stats` and extends the shared metrics pipeline.
+Site Stats is an **Available**, **No schema impact** Capell package in the **Capell Foundation** product group. It ships as `capell-app/site-stats` and extends these surfaces: shared.
 
-Site Stats registers a typed daily collector for global page and site totals. It does not add a package-owned page, widget, route, or public output; an installed Core metrics consumer decides where the collected series is displayed.
+Site Stats registers privacy-safe current-day page and site totals with Capell's typed metrics pipeline.
 
-Evidence: [`capell.json`](capell.json), [`src/Metrics/ContentTotalsMetricsCollector.php`](src/Metrics/ContentTotalsMetricsCollector.php), [`src/Providers/SiteStatsServiceProvider.php`](src/Providers/SiteStatsServiceProvider.php), [`src/Health/SiteStatsHealthCheck.php`](src/Health/SiteStatsHealthCheck.php), [`tests/Unit/Metrics/ContentTotalsMetricsCollectorTest.php`](tests/Unit/Metrics/ContentTotalsMetricsCollectorTest.php).
+Authorized global administrators can inspect retained content-inventory trends through a consuming Core metrics surface without collecting visitor analytics.
+
+Evidence: [`src/Metrics/ContentTotalsMetricsCollector.php`](src/Metrics/ContentTotalsMetricsCollector.php), [`src/Providers/SiteStatsServiceProvider.php`](src/Providers/SiteStatsServiceProvider.php), [`tests/Unit/Metrics/ContentTotalsMetricsCollectorTest.php`](tests/Unit/Metrics/ContentTotalsMetricsCollectorTest.php), [`docs/screenshots/site-stats-metrics-dashboard.png`](docs/screenshots/site-stats-metrics-dashboard.png), [`src/Health/SiteStatsHealthCheck.php`](src/Health/SiteStatsHealthCheck.php), [`tests/Feature/ScreenshotFixtureRouteTest.php`](tests/Feature/ScreenshotFixtureRouteTest.php).
 
 Status details:
 
@@ -21,55 +23,74 @@ Status details:
 
 ## Why It Matters
 
-**For developers:** Metrics use Core's typed definition, collection, scope, representation, and governance contracts instead of exposing package-specific arrays or dashboard queries.
+**For developers:** The collector uses Core metric definitions, scopes, governance, and daily rollups rather than introducing a package-specific reporting store.
 
-**For teams:** A consuming metrics dashboard can show page and site growth from a consistent daily history without Site Stats collecting visitor analytics or adding another reporting screen.
+**For teams:** Teams get a simple retained view of content growth without page-view tracking, request logging, or a second analytics dashboard.
 
-## Metrics Contract
-
-The `content_totals` collector provides:
-
-- `content.pages_total`: page records created by the end of the requested UTC day and not yet deleted on that day.
-- `content.sites_total`: site records created by the end of the requested UTC day and not yet deleted on that day.
-
-Both are integer gauges at global scope. They are classified as internal, visible to site administrators, sourced from Core content tables, and support backfill. Collection returns `Unsupported` when no global scope is requested.
+Evidence: [`src/Metrics/ContentTotalsMetricsCollector.php`](src/Metrics/ContentTotalsMetricsCollector.php), [`tests/Unit/ManifestRequirementsTest.php`](tests/Unit/ManifestRequirementsTest.php), [`tests/Feature/ScreenshotFixtureRouteTest.php`](tests/Feature/ScreenshotFixtureRouteTest.php).
 
 ## Screens And Workflow
 
-Screenshot contract: [`docs/screenshots.json`](docs/screenshots.json).
+Screenshot contract: `docs/screenshots.json`.
 
-The promoted screenshot is an authentic capture of a consuming Core metrics dashboard with Site Stats installed and genuine daily rollups available. It is evidence of the integration, not a Site Stats page or illustrative marketplace artwork.
+![Site Stats content totals in the Core metrics dashboard](docs/screenshots/site-stats-metrics-dashboard.png)
+
+- Site Stats content totals in the Core metrics dashboard (admin, required).
+
+## Technical Shape
+
+- Service providers: `Capell\SiteStats\Providers\SiteStatsServiceProvider`.
+- Manifest contributions: `health-check: Capell\SiteStats\Health\SiteStatsHealthCheck`.
+- Health checks: `Capell\SiteStats\Health\SiteStatsHealthCheck`.
+- Cache tags: `site-stats`.
+
+## Data Model
+
+- Required tables: `pages`, `sites`.
+- Migration impact: run host migrations through the package install flow before opening package surfaces.
+- Deletion/retention behaviour: Docs gap: migrations and manifest contributions do not prove a cascade, pruning command, or timed retention policy.
 
 ## Install Impact
 
 - Required packages: `capell-app/core`.
-- Admin navigation: none.
-- Admin/editor extensions: none.
+- Admin navigation: no admin page or resource contribution is declared.
+- Admin/editor extensions: none declared.
 - Permissions: none declared in `capell.json`.
-- Public routes: none.
-- Database changes: none.
-- Settings: none.
-- Queues or schedules: none declared by this package; the host is responsible for running Core metrics collection.
-- Health check: confirms the Site Stats collector is registered.
+- Public routes: none declared.
+- Database changes: no package migrations declared.
+- Config: no package config files.
+- Settings: no package settings declared.
+- Queues or schedules: none declared.
+- Cache tags: `site-stats`.
+- Commands: none declared.
 
 ## Common Pitfalls
 
-- Installing Site Stats registers the collector but does not create a dashboard.
-- A consuming Core metrics surface needs collected or backfilled samples before it can render a useful trend.
-- The collector currently supports only the global scope; do not present its values as site-scoped totals.
-- Pages and sites deleted on or before the requested day are excluded; later deletions do not rewrite historical totals.
+- Keep required Capell packages on compatible v4 releases: `capell-app/core`.
+- Custom write integrations must preserve invalidation for `site-stats` cache tags.
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check | Fix |
+| --- | --- | --- | --- |
+| Package surface is missing after install | Provider or manifest is not loaded | Confirm `capell.json`, package `composer.json`, and provider registration | Reinstall the package, refresh Composer autoload, and clear host caches |
 
 ## Quick Start
 
 1. Install the package: `composer require capell-app/site-stats`.
-2. Refresh Capell's package discovery and confirm the Site Stats health check passes.
-3. Run the host's Core metrics collection or backfill workflow.
-4. Inspect the resulting `content.pages_total` and `content.sites_total` series through a consuming metrics surface.
+2. No package-specific setup command or migrations are declared.
+3. Open the Site Stats content totals in the Core metrics dashboard and confirm the admin workflow loads.
 
 ## Next Steps
 
-- [Operator overview](docs/overview.md)
+- [Package docs](docs/README.md)
+- [Overview](docs/overview.md)
+- [Troubleshooting](#troubleshooting)
 - [Screenshot contract](docs/screenshots.json)
+- [Marketplace assets](docs/assets/marketplace/)
+- [Capell content language plan](../../docs/CONTENT_LANGUAGE_PLAN.md)
+- [Capell documentation design system](../../docs/DESIGN_SYSTEM.md)
+- [Capell and package ERD notes](../../docs/erd/capell-and-package-erds.md)
 - Focused tests: `vendor/bin/pest packages/site-stats/tests --configuration=phpunit.xml`.
 
 <!-- prettier-ignore-end -->

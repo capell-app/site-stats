@@ -59,10 +59,14 @@ final class ContentTotalsMetricsCollector implements CollectsDailyMetrics
     {
         $globalScopes = array_values(array_filter(
             $scopes,
-            static fn (MetricScopeData $scope): bool => $scope->type === MetricScopeType::Global,
+            static fn (MetricScopeData $scope): bool => $scope->type === MetricScopeType::Global
+                && $scope->timezone === 'UTC'
+                && $scope->dayStartsAt === '00:00:00',
         ));
 
-        if ($globalScopes === []) {
+        if ($globalScopes === []
+            || count($globalScopes) !== count($scopes)
+            || $day !== CarbonImmutable::now('UTC')->toDateString()) {
             return new MetricCollectionResultData(
                 MetricCollectionStatus::Unsupported,
                 $day,
@@ -70,7 +74,7 @@ final class ContentTotalsMetricsCollector implements CollectsDailyMetrics
                 [],
                 null,
                 null,
-                'Content totals currently support the global scope only.',
+                'Content totals support the current UTC day and exact global midnight scope only.',
             );
         }
 
@@ -134,7 +138,7 @@ final class ContentTotalsMetricsCollector implements CollectsDailyMetrics
                 MetricSemantic::Gauge,
                 MetricAggregation::Last,
                 MetricGapPolicy::Missing,
-                MetricBackfillPolicy::Supported,
+                MetricBackfillPolicy::CurrentDayOnly,
             ),
             governance: new MetricGovernanceData(
                 MetricSource::Database,

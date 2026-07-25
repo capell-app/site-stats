@@ -83,8 +83,14 @@ Route::get('/screenshot-fixtures/site-stats/metrics-dashboard', static function 
         ->where('collector_key', 'content_totals')
         ->delete();
 
-    for ($dayOffset = 0; $dayOffset <= 6; $dayOffset++) {
-        $rollup->execute($firstDay->addDays($dayOffset)->toDateString(), [$scope]);
+    try {
+        for ($dayOffset = 0; $dayOffset <= 6; $dayOffset++) {
+            $collectionDay = $firstDay->addDays($dayOffset);
+            CarbonImmutable::setTestNow($collectionDay->addHours(23));
+            $rollup->execute($collectionDay->toDateString(), [$scope]);
+        }
+    } finally {
+        CarbonImmutable::setTestNow();
     }
 
     $configuredEmail = config('capell.screenshot_admin_email', 'admin@example.com');

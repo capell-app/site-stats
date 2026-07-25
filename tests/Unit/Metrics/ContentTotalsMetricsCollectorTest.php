@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Capell\Core\Data\Metrics\MetricSampleData;
 use Capell\Core\Data\Metrics\MetricScopeData;
+use Capell\Core\Enums\Metrics\MetricBackfillPolicy;
 use Capell\Core\Enums\Metrics\MetricCollectionStatus;
 use Capell\SiteStats\Health\SiteStatsHealthCheck;
 use Capell\SiteStats\Metrics\ContentTotalsMetricsCollector;
@@ -15,8 +16,37 @@ it('reports a healthy collector contract', function (): void {
         ->and(SiteStatsHealthCheck::runDiagnostics())->toHaveCount(1);
 });
 
+it('publishes current-day-only global metric definitions', function (): void {
+    $definitions = resolve(ContentTotalsMetricsCollector::class)->definitions();
+
+    expect($definitions)->toHaveCount(2);
+
+    foreach ($definitions as $definition) {
+        expect($definition->semantics->backfillPolicy)->toBe(MetricBackfillPolicy::CurrentDayOnly);
+    }
+});
+
+it('collects only for the current UTC day and exact global midnight scope', function (string $day, array $scopes): void {
+    CarbonImmutable::setTestNow('2026-07-21 12:00:00 UTC');
+    $result = resolve(ContentTotalsMetricsCollector::class)->collect($day, $scopes);
+
+    expect($result->status)->toBe(MetricCollectionStatus::Unsupported)
+        ->and($result->samples)->toBe([])
+        ->and($result->reason)->toBe('Content totals support the current UTC day and exact global midnight scope only.');
+})->with([
+    'historical day' => ['2026-07-20', [MetricScopeData::global('UTC')]],
+    'no scopes' => ['2026-07-21', []],
+    'non-UTC global scope' => ['2026-07-21', [MetricScopeData::global('Europe/London')]],
+    'non-midnight global scope' => ['2026-07-21', [MetricScopeData::global('UTC', '04:00:00')]],
+    'mixed supported and unsupported scopes' => [
+        '2026-07-21',
+        [MetricScopeData::global('UTC'), MetricScopeData::global('Europe/London')],
+    ],
+]);
+
 it('collects global content totals without exposing individual content', function (): void {
     $day = CarbonImmutable::parse('2026-07-21', 'UTC');
+    CarbonImmutable::setTestNow($day->addHours(12));
     $languageId = DB::table('languages')->insertGetId([
         'name' => 'English',
         'code' => 'en',

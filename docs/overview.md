@@ -2,35 +2,92 @@
 
 <!-- prettier-ignore-start -->
 
-## What it does
+## What This Plugin Adds
 
-Site Stats supplies Capell's shared metrics pipeline with two daily content totals: pages created and sites created. The values form a historical series that another Core metrics or dashboard surface can present.
+Site Stats is an **Available**, **No schema impact** Capell package in the **Capell Foundation** product group. It ships as `capell-app/site-stats` and extends these surfaces: shared.
 
-The package collects content inventory, not visitor analytics. It does not track people, requests, referrers, devices, or page views.
+Site Stats registers privacy-safe current-day page and site totals with Capell's typed metrics pipeline.
 
-## Where it appears
+Authorized global administrators can inspect retained content-inventory trends through a consuming Core metrics surface without collecting visitor analytics.
 
-Site Stats has no package-owned screen, navigation item, setting, or public output. Its figures appear only when a consuming Core metrics dashboard or another installed package chooses to display the registered series.
+Evidence: [`src/Metrics/ContentTotalsMetricsCollector.php`](../src/Metrics/ContentTotalsMetricsCollector.php), [`src/Providers/SiteStatsServiceProvider.php`](../src/Providers/SiteStatsServiceProvider.php), [`tests/Unit/Metrics/ContentTotalsMetricsCollectorTest.php`](../tests/Unit/Metrics/ContentTotalsMetricsCollectorTest.php), [`docs/screenshots/site-stats-metrics-dashboard.png`](../docs/screenshots/site-stats-metrics-dashboard.png), [`src/Health/SiteStatsHealthCheck.php`](../src/Health/SiteStatsHealthCheck.php), [`tests/Feature/ScreenshotFixtureRouteTest.php`](../tests/Feature/ScreenshotFixtureRouteTest.php).
 
-The Marketplace screenshot shows Site Stats data inside Core's consuming metrics dashboard. It is authentic integration evidence, not a claim that Site Stats ships that dashboard.
+Status details:
 
-## How the totals work
+- Status: Available
+- Tier: free
+- Bundle: foundation
+- Composer package: `capell-app/site-stats`
+- Namespace: `Capell\SiteStats`
+- Theme key: not applicable
 
-- **Pages total** counts page records created on or before the end of the selected UTC day.
-- **Sites total** counts site records created on or before the end of the selected UTC day.
-- Records deleted on or before the selected day are excluded; records deleted later remain in that historical day's totals.
-- Both figures are global across the installation, not filtered to one site.
+## Why It Matters
 
-Backfilled days use each record's creation date, so the series can show when the content inventory grew. A missing day remains missing rather than being silently treated as zero.
+**For developers:** The collector uses Core metric definitions, scopes, governance, and daily rollups rather than introducing a package-specific reporting store.
 
-## Operations and access
+**For teams:** Teams get a simple retained view of content growth without page-view tracking, request logging, or a second analytics dashboard.
 
-The host must run Core's metrics collection or backfill workflow and retain the resulting samples. Site Stats does not register its own schedule.
+Evidence: [`src/Metrics/ContentTotalsMetricsCollector.php`](../src/Metrics/ContentTotalsMetricsCollector.php), [`tests/Unit/ManifestRequirementsTest.php`](../tests/Unit/ManifestRequirementsTest.php), [`tests/Feature/ScreenshotFixtureRouteTest.php`](../tests/Feature/ScreenshotFixtureRouteTest.php).
 
-The metrics are classified as internal and site-administrator visible. Limit access to the consuming dashboard accordingly. Use the package health check to confirm the collector is registered if expected series are absent.
+## Screens And Workflow
 
----
+Screenshot contract: `screenshots.json`.
 
-For developers: see the [README](../README.md).
+- Site Stats content totals in the Core metrics dashboard (admin, required).
+
+## Technical Shape
+
+- Service providers: `Capell\SiteStats\Providers\SiteStatsServiceProvider`.
+- Manifest contributions: `health-check: Capell\SiteStats\Health\SiteStatsHealthCheck`.
+- Health checks: `Capell\SiteStats\Health\SiteStatsHealthCheck`.
+- Cache tags: `site-stats`.
+
+## Data Model
+
+- Required tables: `pages`, `sites`.
+- Migration impact: run host migrations through the package install flow before opening package surfaces.
+- Deletion/retention behaviour: Docs gap: migrations and manifest contributions do not prove a cascade, pruning command, or timed retention policy.
+
+## Install Impact
+
+- Required packages: `capell-app/core`.
+- Admin navigation: no admin page or resource contribution is declared.
+- Admin/editor extensions: none declared.
+- Permissions: none declared in `capell.json`.
+- Public routes: none declared.
+- Database changes: no package migrations declared.
+- Config: no package config files.
+- Settings: no package settings declared.
+- Queues or schedules: none declared.
+- Cache tags: `site-stats`.
+- Commands: none declared.
+
+## Common Pitfalls
+
+- Keep required Capell packages on compatible v4 releases: `capell-app/core`.
+- Custom write integrations must preserve invalidation for `site-stats` cache tags.
+
+## Troubleshooting
+
+| Symptom | Likely cause | Check | Fix |
+| --- | --- | --- | --- |
+| Package surface is missing after install | Provider or manifest is not loaded | Confirm `capell.json`, package `composer.json`, and provider registration | Reinstall the package, refresh Composer autoload, and clear host caches |
+
+## Quick Start
+
+1. Install the package: `composer require capell-app/site-stats`.
+2. No package-specific setup command or migrations are declared.
+3. Open the Site Stats content totals in the Core metrics dashboard and confirm the admin workflow loads.
+
+## Next Steps
+
+- [Package docs index](README.md)
+- [Developer troubleshooting](../README.md#troubleshooting)
+- [Screenshot contract](screenshots.json)
+- [Marketplace assets](assets/marketplace/)
+- [Capell content language plan](../../../docs/CONTENT_LANGUAGE_PLAN.md)
+- [Capell documentation design system](../../../docs/DESIGN_SYSTEM.md)
+- [Capell and package ERD notes](../../../docs/erd/capell-and-package-erds.md)
+- Focused tests: `vendor/bin/pest packages/site-stats/tests --configuration=phpunit.xml`.
 
 <!-- prettier-ignore-end -->

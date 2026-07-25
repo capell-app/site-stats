@@ -1,0 +1,34 @@
+{
+    "whatThisPluginAdds": {
+        "text": "Site Stats registers privacy-safe current-day page and site totals with Capell's typed metrics pipeline.",
+        "evidence": [
+            "src/Metrics/ContentTotalsMetricsCollector.php",
+            "src/Providers/SiteStatsServiceProvider.php",
+            "tests/Unit/Metrics/ContentTotalsMetricsCollectorTest.php"
+        ]
+    },
+    "surfaceOutcome": {
+        "text": "Authorized global administrators can inspect retained content-inventory trends through a consuming Core metrics surface without collecting visitor analytics.",
+        "evidence": [
+            "docs/screenshots/site-stats-metrics-dashboard.png",
+            "src/Health/SiteStatsHealthCheck.php",
+            "tests/Feature/ScreenshotFixtureRouteTest.php"
+        ]
+    },
+    "whyItMatters": {
+        "developers": {
+            "text": "The collector uses Core metric definitions, scopes, governance, and daily rollups rather than introducing a package-specific reporting store.",
+            "evidence": [
+                "src/Metrics/ContentTotalsMetricsCollector.php",
+                "tests/Unit/ManifestRequirementsTest.php"
+            ]
+        },
+        "teams": {
+            "text": "Teams get a simple retained view of content growth without page-view tracking, request logging, or a second analytics dashboard.",
+            "evidence": [
+                "src/Metrics/ContentTotalsMetricsCollector.php",
+                "tests/Feature/ScreenshotFixtureRouteTest.php"
+            ]
+        }
+    }
+}

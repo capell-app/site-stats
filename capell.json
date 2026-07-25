@@ -2,11 +2,11 @@
     "manifest-version": 3,
     "name": "capell-app/site-stats",
     "slug": "site-stats",
-    "displayName": "Metric Trends",
+    "displayName": "Site Stats",
     "kind": "package",
     "capellApiVersion": "^1.0",
     "version": "1.0.0",
-    "description": "Metric Trends provides privacy-safe content totals through Capell's typed metrics pipeline.",
+    "description": "Site Stats provides privacy-safe content totals through Capell's typed metrics pipeline.",
     "product": {
         "group": "Capell Foundation",
         "tier": "free",
@@ -35,7 +35,7 @@
     "database": {
         "migrations": false,
         "settings": false,
-        "requiredTables": []
+        "requiredTables": ["pages", "sites"]
     },
     "commands": {
         "install": null,
@@ -95,7 +95,7 @@
     "healthChecks": [
         {
             "key": "site-stats.metrics-collector",
-            "label": "Metric Trends collector registration is available.",
+            "label": "Site Stats collector registration is available.",
             "class": "Capell\\SiteStats\\Health\\SiteStatsHealthCheck",
             "severity": "critical",
             "surface": "admin"
@@ -108,8 +108,8 @@
         "privateDocsRequested": false
     },
     "marketplace": {
-        "summary": "Privacy-safe content totals and trends built on Capell's typed metrics pipeline.",
-        "description": "Registers global daily page and site totals with Capell's shared typed metrics pipeline. Site Stats owns no dashboard or public UI; installed Core metrics consumers can display the collected and backfilled series.",
+        "summary": "Privacy-safe page and site totals and trends built on Capell's typed metrics pipeline.",
+        "description": "Registers current-day global page and site totals with Capell's shared typed metrics pipeline. Site Stats owns no dashboard or public UI; installed Core metrics consumers can display the retained daily series.",
         "screenshots": [
             {
                 "path": "docs/screenshots/site-stats-metrics-dashboard.png",
@@ -118,5 +118,13 @@
             }
         ],
         "categories": ["foundation", "analytics"]
+    },
+    "contributionTraceability": {
+        "deferredContributions": [],
+        "runtimeIntegrations": {
+            "metricCollectors": [
+                "Capell\\SiteStats\\Metrics\\ContentTotalsMetricsCollector"
+            ]
+        }
     }
 }

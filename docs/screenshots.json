@@ -6,7 +6,7 @@
     "composerRequires": ["capell-app/site-stats"],
     "outputDirectory": "packages/site-stats/docs/screenshots",
     "auditStatus": "authentic-host-integration",
-    "auditReason": "Captured from the real Core Site Metrics dashboard after Site Stats seeded and rolled up multiple UTC days of page and site totals.",
+    "auditReason": "Captured from the real Core Site Metrics dashboard after Site Stats collected and retained daily page and site totals.",
     "entries": [
         {
             "id": "site-stats-metrics-dashboard",
@@ -22,7 +22,7 @@
             "required": true,
             "screenshotPath": "packages/site-stats/docs/screenshots/site-stats-metrics-dashboard.png",
             "fixtureKind": "authentic-host-integration",
-            "notes": "Authentic host-integration evidence captured from the consuming Core metrics dashboard with capell-app/site-stats installed. The fixture seeds multiple UTC days of Core content records and runs RollupDailyMetricsAction so ContentTotalsMetricsCollector produces non-flat page and site trends. The dashboard remains host-owned and is not a package-owned Site Stats UI.",
+            "notes": "Authentic host-integration evidence captured from the consuming Core metrics dashboard with capell-app/site-stats installed. The fixture supplies representative retained daily samples so the dashboard can show non-flat page and site trends. The dashboard remains host-owned and is not a package-owned Site Stats UI.",
             "useCase": "An administrator verifies that the installed Site Stats collector supplies page and site inventory history to Capell's shared metrics dashboard.",
             "covers": [
                 "packages/site-stats/src/Metrics/ContentTotalsMetricsCollector.php"
