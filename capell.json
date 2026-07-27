@@ -76,7 +76,7 @@
             "clients": []
         },
         "adminSurface": {
-            "authorization": "panel-auth",
+            "authorization": "none",
             "permissions": []
         }
     },

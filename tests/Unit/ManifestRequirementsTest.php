@@ -21,7 +21,15 @@ function siteStatsJson(string $path): array
 
     throw_unless(is_array($decoded), RuntimeException::class);
 
-    return $decoded;
+    $json = [];
+
+    foreach ($decoded as $key => $value) {
+        throw_unless(is_string($key), RuntimeException::class);
+
+        $json[$key] = $value;
+    }
+
+    return $json;
 }
 
 it('passes the Capell manifest validator', function (): void {
@@ -52,13 +60,16 @@ it('keeps marketplace screenshot metadata tied to committed evidence', function 
     $manifest = siteStatsJson('capell.json');
     $screenshots = siteStatsJson('docs/screenshots.json');
     $marketplaceScreenshot = data_get($manifest, 'marketplace.screenshots.0');
+    $marketplaceScreenshotPath = data_get($marketplaceScreenshot, 'path');
+
+    throw_unless(is_string($marketplaceScreenshotPath), RuntimeException::class);
 
     expect($marketplaceScreenshot)->toBeArray()
-        ->and(data_get($marketplaceScreenshot, 'path'))->toBe('docs/screenshots/site-stats-metrics-dashboard.png')
+        ->and($marketplaceScreenshotPath)->toBe('docs/screenshots/site-stats-metrics-dashboard.png')
         ->and(data_get($marketplaceScreenshot, 'alt'))->not->toBeEmpty()
         ->and(data_get($marketplaceScreenshot, 'caption'))->not->toBeEmpty()
-        ->and(is_file(dirname(__DIR__, 2) . '/' . data_get($marketplaceScreenshot, 'path')))->toBeTrue()
+        ->and(is_file(dirname(__DIR__, 2) . '/' . $marketplaceScreenshotPath))->toBeTrue()
         ->and(data_get($screenshots, 'entries.0.screenshotPath'))->toBe(
-            'packages/site-stats/' . data_get($marketplaceScreenshot, 'path'),
+            'packages/site-stats/' . $marketplaceScreenshotPath,
         );
 });

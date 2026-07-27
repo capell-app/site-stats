@@ -26,21 +26,25 @@ it('publishes current-day-only global metric definitions', function (): void {
     }
 });
 
-it('collects only for the current UTC day and exact global midnight scope', function (string $day, array $scopes): void {
-    CarbonImmutable::setTestNow('2026-07-21 12:00:00 UTC');
-    $result = resolve(ContentTotalsMetricsCollector::class)->collect($day, $scopes);
+it(
+    'collects only for the current UTC day and exact global midnight scope',
+    function (string $day, MetricScopeData ...$scopes): void {
+        CarbonImmutable::setTestNow('2026-07-21 12:00:00 UTC');
+        $result = resolve(ContentTotalsMetricsCollector::class)->collect($day, array_values($scopes));
 
-    expect($result->status)->toBe(MetricCollectionStatus::Unsupported)
-        ->and($result->samples)->toBe([])
-        ->and($result->reason)->toBe('Content totals support the current UTC day and exact global midnight scope only.');
-})->with([
-    'historical day' => ['2026-07-20', [MetricScopeData::global('UTC')]],
-    'no scopes' => ['2026-07-21', []],
-    'non-UTC global scope' => ['2026-07-21', [MetricScopeData::global('Europe/London')]],
-    'non-midnight global scope' => ['2026-07-21', [MetricScopeData::global('UTC', '04:00:00')]],
+        expect($result->status)->toBe(MetricCollectionStatus::Unsupported)
+            ->and($result->samples)->toBe([])
+            ->and($result->reason)->toBe('Content totals support the current UTC day and exact global midnight scope only.');
+    },
+)->with([
+    'historical day' => ['2026-07-20', MetricScopeData::global('UTC')],
+    'no scopes' => ['2026-07-21'],
+    'non-UTC global scope' => ['2026-07-21', MetricScopeData::global('Europe/London')],
+    'non-midnight global scope' => ['2026-07-21', MetricScopeData::global('UTC', '04:00:00')],
     'mixed supported and unsupported scopes' => [
         '2026-07-21',
-        [MetricScopeData::global('UTC'), MetricScopeData::global('Europe/London')],
+        MetricScopeData::global('UTC'),
+        MetricScopeData::global('Europe/London'),
     ],
 ]);
 
