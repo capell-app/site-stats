@@ -56,20 +56,12 @@ it('declares its shipped health and metrics contracts', function (): void {
         ->and(class_implements(ContentTotalsMetricsCollector::class))->toContain(CollectsDailyMetrics::class);
 });
 
-it('keeps marketplace screenshot metadata tied to committed evidence', function (): void {
+it('does not promote its host-owned diagnostics as package screenshots', function (): void {
     $manifest = siteStatsJson('capell.json');
     $screenshots = siteStatsJson('docs/screenshots.json');
-    $marketplaceScreenshot = data_get($manifest, 'marketplace.screenshots.0');
-    $marketplaceScreenshotPath = data_get($marketplaceScreenshot, 'path');
 
-    throw_unless(is_string($marketplaceScreenshotPath), RuntimeException::class);
-
-    expect($marketplaceScreenshot)->toBeArray()
-        ->and($marketplaceScreenshotPath)->toBe('docs/screenshots/site-stats-metrics-dashboard.png')
-        ->and(data_get($marketplaceScreenshot, 'alt'))->not->toBeEmpty()
-        ->and(data_get($marketplaceScreenshot, 'caption'))->not->toBeEmpty()
-        ->and(is_file(dirname(__DIR__, 2) . '/' . $marketplaceScreenshotPath))->toBeTrue()
-        ->and(data_get($screenshots, 'entries.0.screenshotPath'))->toBe(
-            'packages/site-stats/' . $marketplaceScreenshotPath,
-        );
+    expect(data_get($manifest, 'surfaces'))->toBe(['shared'])
+        ->and(data_get($manifest, 'marketplace.screenshots'))->toBe([])
+        ->and(data_get($screenshots, 'entries.0.required'))->toBeFalse()
+        ->and(data_get($screenshots, 'entries.0.fixtureKind'))->toBe('host-integration-diagnostic');
 });

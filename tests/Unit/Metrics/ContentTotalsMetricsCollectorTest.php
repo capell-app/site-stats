@@ -10,6 +10,7 @@ use Capell\SiteStats\Health\SiteStatsHealthCheck;
 use Capell\SiteStats\Metrics\ContentTotalsMetricsCollector;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 it('reports a healthy collector contract', function (): void {
     expect(SiteStatsHealthCheck::passed())->toBeTrue()
@@ -87,6 +88,7 @@ it('collects global content totals without exposing individual content', functio
         'updated_at' => $day->subYear(),
     ]);
     $siteId = DB::table('sites')->insertGetId([
+        'uuid' => (string) Str::uuid(),
         'name' => 'Metrics Before Cutoff',
         'language_id' => $languageId,
         'blueprint_id' => $siteBlueprintId,
@@ -96,6 +98,7 @@ it('collects global content totals without exposing individual content', functio
         'deleted_at' => $day->addDay(),
     ]);
     DB::table('sites')->insert([
+        'uuid' => (string) Str::uuid(),
         'name' => 'Metrics After Cutoff',
         'language_id' => $languageId,
         'blueprint_id' => $siteBlueprintId,
@@ -104,6 +107,7 @@ it('collects global content totals without exposing individual content', functio
         'updated_at' => $day->addDay(),
     ]);
     DB::table('sites')->insert([
+        'uuid' => (string) Str::uuid(),
         'name' => 'Metrics Deleted Before Cutoff',
         'language_id' => $languageId,
         'blueprint_id' => $siteBlueprintId,
