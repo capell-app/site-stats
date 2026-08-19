@@ -6,9 +6,9 @@
 
 Site Stats is an **Available**, **No package-owned schema** Capell package in the **Capell Foundation** product group. It ships as `capell-app/site-stats` and extends these surfaces: shared.
 
-Site Stats registers privacy-safe current-day page and site totals with Capell's typed metrics pipeline.
+Site Stats registers privacy-safe current-day page, site, active site, and active domain totals with Capell's typed metrics pipeline.
 
-Authorized global administrators can inspect retained content-inventory trends through a consuming Core metrics surface without collecting visitor analytics. The retained series is stored by Core, not by Site Stats.
+Authorized global administrators can inspect four retained content-inventory trends through a consuming Core metrics surface without collecting visitor analytics. The retained series is stored by Core, not by Site Stats.
 
 Evidence: [`src/Metrics/ContentTotalsMetricsCollector.php`](src/Metrics/ContentTotalsMetricsCollector.php), [`src/Providers/SiteStatsServiceProvider.php`](src/Providers/SiteStatsServiceProvider.php), [`tests/Unit/Metrics/ContentTotalsMetricsCollectorTest.php`](tests/Unit/Metrics/ContentTotalsMetricsCollectorTest.php), [`docs/screenshots/site-stats-metrics-dashboard.png`](docs/screenshots/site-stats-metrics-dashboard.png), [`src/Health/SiteStatsHealthCheck.php`](src/Health/SiteStatsHealthCheck.php), [`tests/Feature/ScreenshotFixtureRouteTest.php`](tests/Feature/ScreenshotFixtureRouteTest.php).
 
@@ -46,7 +46,7 @@ Screenshot contract: `docs/screenshots.json`.
 
 ## Data Model
 
-- Required source tables: `pages`, `sites`.
+- Required source tables: `pages`, `sites`, `site_domains`.
 - Migration impact: Site Stats declares no migrations. Core owns the `metric_daily_rollups` and metric collection-run tables used for retained samples; run Core migrations through the host install flow before opening package surfaces.
 - Deletion/retention behaviour: Site Stats has no deletion or retention command. Core's `capell:metrics:prune` deletes daily rollups and their provenance runs older than the configured `capell.analytics.daily_rollup_retention_days` (365 days by default; accepted range 30-3650). Core registers that command daily at 00:50 UTC, after the 00:20 UTC rollup; a running host scheduler is required.
 
@@ -79,7 +79,7 @@ Screenshot contract: `docs/screenshots.json`.
 
 1. Install the package: `composer require capell-app/site-stats`.
 2. No package-specific setup command, migrations, retention command, or schedule is declared; Core supplies the shared persistence and schedule.
-3. Open the Site Stats content totals in the Core metrics dashboard and confirm the admin workflow loads.
+3. Open the Site Stats metrics in the Core metrics dashboard and confirm the admin workflow loads.
 
 ## Next Steps
 

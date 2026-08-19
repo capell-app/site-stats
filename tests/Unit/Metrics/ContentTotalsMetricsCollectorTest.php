@@ -20,7 +20,13 @@ it('reports a healthy collector contract', function (): void {
 it('publishes current-day-only global metric definitions', function (): void {
     $definitions = resolve(ContentTotalsMetricsCollector::class)->definitions();
 
-    expect($definitions)->toHaveCount(2);
+    expect($definitions)->toHaveCount(4)
+        ->and(collect($definitions)->pluck('identity.metricKey')->all())->toBe([
+            'content.pages_total',
+            'content.sites_total',
+            'content.active_sites_total',
+            'content.active_domains_total',
+        ]);
 
     foreach ($definitions as $definition) {
         expect($definition->semantics->backfillPolicy)->toBe(MetricBackfillPolicy::CurrentDayOnly);
@@ -116,6 +122,73 @@ it('collects global content totals without exposing individual content', functio
         'updated_at' => $day->subDay(),
         'deleted_at' => $day,
     ]);
+    $disabledSiteId = DB::table('sites')->insertGetId([
+        'uuid' => (string) Str::uuid(),
+        'name' => 'Metrics Disabled Before Cutoff',
+        'language_id' => $languageId,
+        'blueprint_id' => $siteBlueprintId,
+        'theme_id' => $themeId,
+        'status' => false,
+        'created_at' => $day->subDay(),
+        'updated_at' => $day->subDay(),
+    ]);
+    DB::table('site_domains')->insert([
+        [
+            'site_id' => $siteId,
+            'language_id' => $languageId,
+            'domain' => 'active-metrics.example.test',
+            'scheme' => 'https',
+            'status' => true,
+            'default' => true,
+            'created_at' => $day->subDay(),
+            'updated_at' => $day->subDay(),
+            'deleted_at' => null,
+        ],
+        [
+            'site_id' => $disabledSiteId,
+            'language_id' => $languageId,
+            'domain' => 'disabled-metrics.example.test',
+            'scheme' => 'https',
+            'status' => true,
+            'default' => true,
+            'created_at' => $day->subDay(),
+            'updated_at' => $day->subDay(),
+            'deleted_at' => null,
+        ],
+        [
+            'site_id' => $siteId,
+            'language_id' => $languageId,
+            'domain' => 'inactive-metrics.example.test',
+            'scheme' => 'https',
+            'status' => false,
+            'default' => false,
+            'created_at' => $day->subDay(),
+            'updated_at' => $day->subDay(),
+            'deleted_at' => null,
+        ],
+        [
+            'site_id' => $siteId,
+            'language_id' => $languageId,
+            'domain' => 'deleted-metrics.example.test',
+            'scheme' => 'https',
+            'status' => true,
+            'default' => false,
+            'created_at' => $day->subDay(),
+            'updated_at' => $day->subDay(),
+            'deleted_at' => $day,
+        ],
+        [
+            'site_id' => $siteId,
+            'language_id' => $languageId,
+            'domain' => 'future-metrics.example.test',
+            'scheme' => 'https',
+            'status' => true,
+            'default' => false,
+            'created_at' => $day->addDay(),
+            'updated_at' => $day->addDay(),
+            'deleted_at' => null,
+        ],
+    ]);
     $layoutId = DB::table('layouts')->insertGetId([
         'name' => 'Metrics layout',
         'site_id' => $siteId,
@@ -153,14 +226,22 @@ it('collects global content totals without exposing individual content', functio
     );
     $pagesSample = $samples->get('content.pages_total');
     $sitesSample = $samples->get('content.sites_total');
+    $activeSitesSample = $samples->get('content.active_sites_total');
+    $activeDomainsSample = $samples->get('content.active_domains_total');
 
     expect($result->status)->toBe(MetricCollectionStatus::Complete);
     expect($pagesSample)->toBeInstanceOf(MetricSampleData::class);
     expect($sitesSample)->toBeInstanceOf(MetricSampleData::class);
+    expect($activeSitesSample)->toBeInstanceOf(MetricSampleData::class);
+    expect($activeDomainsSample)->toBeInstanceOf(MetricSampleData::class);
 
     throw_unless($pagesSample instanceof MetricSampleData);
     throw_unless($sitesSample instanceof MetricSampleData);
+    throw_unless($activeSitesSample instanceof MetricSampleData);
+    throw_unless($activeDomainsSample instanceof MetricSampleData);
 
     expect($pagesSample->value->integer)->toBe(3)
-        ->and($sitesSample->value->integer)->toBe(1);
+        ->and($sitesSample->value->integer)->toBe(2)
+        ->and($activeSitesSample->value->integer)->toBe(1)
+        ->and($activeDomainsSample->value->integer)->toBe(1);
 });

@@ -20,5 +20,13 @@ return [
             'label' => 'Sites',
             'description' => 'Total non-deleted sites.',
         ],
+        'active_sites_total' => [
+            'label' => 'Active sites',
+            'description' => 'Active, non-deleted sites.',
+        ],
+        'active_domains_total' => [
+            'label' => 'Active domains',
+            'description' => 'Active, non-deleted domains attached to active sites.',
+        ],
     ],
 ];

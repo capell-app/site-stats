@@ -45,7 +45,7 @@ it('passes the Capell manifest validator', function (): void {
     expect(data_get($manifest, 'version'))->toBe('1.0.0')
         ->and(data_get($manifest, 'product.tier'))->toBe('free')
         ->and(data_get($manifest, 'commercial.requestedCertification'))->toBe('first-party')
-        ->and(data_get($manifest, 'database.requiredTables'))->toBe(['pages', 'sites'])
+        ->and(data_get($manifest, 'database.requiredTables'))->toBe(['pages', 'sites', 'site_domains'])
         ->and(data_get($manifest, 'contributionTraceability.runtimeIntegrations.metricCollectors'))->toBe([
             ContentTotalsMetricsCollector::class,
         ]);

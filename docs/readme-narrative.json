@@ -1,6 +1,6 @@
 {
     "whatThisPluginAdds": {
-        "text": "Site Stats registers privacy-safe current-day page and site totals with Capell's typed metrics pipeline.",
+        "text": "Site Stats registers privacy-safe current-day page, site, active site, and active domain totals with Capell's typed metrics pipeline.",
         "evidence": [
             "src/Metrics/ContentTotalsMetricsCollector.php",
             "src/Providers/SiteStatsServiceProvider.php",
@@ -8,7 +8,7 @@
         ]
     },
     "surfaceOutcome": {
-        "text": "Authorized global administrators can inspect retained content-inventory trends through a consuming Core metrics surface without collecting visitor analytics.",
+        "text": "Authorized global administrators can inspect four retained content-inventory trends through a consuming Core metrics surface without collecting visitor analytics.",
         "evidence": [
             "docs/screenshots/site-stats-metrics-dashboard.png",
             "src/Health/SiteStatsHealthCheck.php",

@@ -27,6 +27,7 @@ use Capell\Core\Enums\Metrics\MetricVisibility;
 use Capell\Core\Enums\MetricUnitEnum;
 use Capell\Core\Models\Page;
 use Capell\Core\Models\Site;
+use Capell\Core\Models\SiteDomain;
 use Carbon\CarbonImmutable;
 
 final class ContentTotalsMetricsCollector implements CollectsDailyMetrics
@@ -48,6 +49,16 @@ final class ContentTotalsMetricsCollector implements CollectsDailyMetrics
                 'content.sites_total',
                 __('capell-site-stats::metrics.content.sites_total.label'),
                 __('capell-site-stats::metrics.content.sites_total.description'),
+            ),
+            $this->definition(
+                'content.active_sites_total',
+                __('capell-site-stats::metrics.content.active_sites_total.label'),
+                __('capell-site-stats::metrics.content.active_sites_total.description'),
+            ),
+            $this->definition(
+                'content.active_domains_total',
+                __('capell-site-stats::metrics.content.active_domains_total.label'),
+                __('capell-site-stats::metrics.content.active_domains_total.description'),
             ),
         ];
     }
@@ -79,6 +90,15 @@ final class ContentTotalsMetricsCollector implements CollectsDailyMetrics
         }
 
         $endOfDay = CarbonImmutable::parse($day, 'UTC')->endOfDay();
+        $activeSiteAtEndOfDay = static function ($query) use ($endOfDay): void {
+            $query
+                ->withTrashed()
+                ->where('status', true)
+                ->where('created_at', '<=', $endOfDay)
+                ->where(static function ($query) use ($endOfDay): void {
+                    $query->whereNull('deleted_at')->orWhere('deleted_at', '>', $endOfDay);
+                });
+        };
         $values = [
             'content.pages_total' => Page::query()
                 ->withTrashed()
@@ -93,6 +113,19 @@ final class ContentTotalsMetricsCollector implements CollectsDailyMetrics
                 ->where(static function ($query) use ($endOfDay): void {
                     $query->whereNull('deleted_at')->orWhere('deleted_at', '>', $endOfDay);
                 })
+                ->count(),
+            'content.active_sites_total' => Site::query()
+                ->withTrashed()
+                ->where($activeSiteAtEndOfDay)
+                ->count(),
+            'content.active_domains_total' => SiteDomain::query()
+                ->withTrashed()
+                ->where('status', true)
+                ->where('created_at', '<=', $endOfDay)
+                ->where(static function ($query) use ($endOfDay): void {
+                    $query->whereNull('deleted_at')->orWhere('deleted_at', '>', $endOfDay);
+                })
+                ->whereHas('site', $activeSiteAtEndOfDay)
                 ->count(),
         ];
         $definitions = collect($this->definitions())->keyBy(
@@ -122,7 +155,7 @@ final class ContentTotalsMetricsCollector implements CollectsDailyMetrics
             $day,
             $globalScopes,
             $samples,
-            'database:created-at:' . $day,
+            'database:content-state:' . $day,
             hash('sha256', $sourcePayload),
             null,
         );
