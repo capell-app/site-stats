@@ -10,8 +10,6 @@ Site Stats registers privacy-safe current-day page, site, active site, and activ
 
 Authorized global administrators can inspect four retained content-inventory trends through a consuming Core metrics surface without collecting visitor analytics.
 
-Evidence: [`src/Metrics/ContentTotalsMetricsCollector.php`](src/Metrics/ContentTotalsMetricsCollector.php), [`src/Providers/SiteStatsServiceProvider.php`](src/Providers/SiteStatsServiceProvider.php), [`tests/Unit/Metrics/ContentTotalsMetricsCollectorTest.php`](tests/Unit/Metrics/ContentTotalsMetricsCollectorTest.php), [`docs/screenshots/site-stats-metrics-dashboard.png`](docs/screenshots/site-stats-metrics-dashboard.png), [`src/Health/SiteStatsHealthCheck.php`](src/Health/SiteStatsHealthCheck.php), [`tests/Feature/ScreenshotFixtureRouteTest.php`](tests/Feature/ScreenshotFixtureRouteTest.php).
-
 Status details:
 
 - Status: Available
@@ -27,13 +25,13 @@ Status details:
 
 **For teams:** Teams get a simple retained view of content growth without page-view tracking, request logging, or a second analytics dashboard.
 
-Evidence: [`src/Metrics/ContentTotalsMetricsCollector.php`](src/Metrics/ContentTotalsMetricsCollector.php), [`tests/Unit/ManifestRequirementsTest.php`](tests/Unit/ManifestRequirementsTest.php), [`tests/Feature/ScreenshotFixtureRouteTest.php`](tests/Feature/ScreenshotFixtureRouteTest.php).
-
 ## Screens And Workflow
 
 Screenshot contract: `docs/screenshots.json`.
 
 ![Site Stats content totals in the Core metrics dashboard](docs/screenshots/site-stats-metrics-dashboard.png)
+
+![Site Stats content totals in the Core metrics dashboard with admin sidebar menu open](docs/screenshots/site-stats-admin-sidebar-menu-open.png)
 
 - Site Stats content totals in the Core metrics dashboard (admin, supplementary documentation fixture).
 - Site Stats content totals in the Core metrics dashboard with admin sidebar menu open (admin, supplementary documentation fixture).
@@ -103,6 +101,5 @@ Screenshot contract: `docs/screenshots.json`.
 - [Capell content language plan](../../docs/CONTENT_LANGUAGE_PLAN.md)
 - [Capell documentation design system](../../docs/DESIGN_SYSTEM.md)
 - [Capell and package ERD notes](../../docs/erd/capell-and-package-erds.md)
-- Focused tests: `vendor/bin/pest packages/site-stats/tests --configuration=phpunit.xml`.
 
 <!-- prettier-ignore-end -->

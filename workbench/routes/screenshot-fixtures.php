@@ -8,12 +8,13 @@ use Capell\Core\Models\MetricCollectionRun;
 use Capell\Core\Models\MetricDailyRollup;
 use Capell\Core\Models\Page;
 use Capell\Core\Models\Site;
+use Capell\Core\Models\SiteDomain;
 use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/screenshot-fixtures/site-stats/metrics-dashboard', static function (): RedirectResponse {
+Route::middleware('web')->get('/screenshot-fixtures/site-stats/metrics-dashboard', static function (): RedirectResponse {
     abort_unless(
         app()->isLocal() && in_array(request()->ip(), ['127.0.0.1', '::1'], true),
         404,
@@ -29,7 +30,7 @@ Route::get('/screenshot-fixtures/site-stats/metrics-dashboard', static function 
         $site = Site::query()->where('name', $name)->first();
 
         if (! $site instanceof Site) {
-            $site = Site::factory()->createOne([
+            $site = Site::factory()->withTranslations()->createOne([
                 'name' => $name,
                 'created_at' => $createdAt,
                 'updated_at' => $createdAt,
@@ -40,6 +41,13 @@ Route::get('/screenshot-fixtures/site-stats/metrics-dashboard', static function 
                 'updated_at' => $createdAt,
             ])->saveQuietly();
         }
+
+        // Page observers regenerate sitemaps synchronously in the workbench.
+        // Older fixture sites may exist from a failed request without a domain.
+        SiteDomain::query()->firstOrCreate(
+            ['site_id' => $site->id, 'language_id' => $site->language_id],
+            ['domain' => sprintf('studio-%d.example.test', $index + 1), 'scheme' => 'https', 'path' => null, 'port' => null, 'default' => true, 'status' => true],
+        );
 
         $sites[] = $site;
     }
@@ -72,7 +80,7 @@ Route::get('/screenshot-fixtures/site-stats/metrics-dashboard', static function 
     }
 
     $scope = MetricScopeData::global('UTC');
-    $rollup = app(RollupDailyMetricsAction::class);
+    $rollup = resolve(RollupDailyMetricsAction::class);
 
     MetricDailyRollup::query()
         ->where('owner_package', 'capell-app/site-stats')
@@ -109,6 +117,6 @@ Route::get('/screenshot-fixtures/site-stats/metrics-dashboard', static function 
         request()->session()->put('password_hash_' . $guard, $user->getAuthPassword());
     }
 
-    return redirect()->route('filament.admin.pages.site-admin-metrics');
+    return to_route('filament.admin.pages.site-admin-metrics');
 })
     ->name('screenshot-fixtures.site-stats.metrics-dashboard');
