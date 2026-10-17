@@ -6,6 +6,7 @@ namespace Capell\SiteStats\Providers;
 
 use Capell\Core\Support\Packages\AbstractPackageServiceProvider;
 use Capell\SiteStats\Metrics\ContentTotalsMetricsCollector;
+use Override;
 use Spatie\LaravelPackageTools\Package;
 
 final class SiteStatsServiceProvider extends AbstractPackageServiceProvider
@@ -14,6 +15,7 @@ final class SiteStatsServiceProvider extends AbstractPackageServiceProvider
 
     public static string $packageName = 'capell-app/site-stats';
 
+    #[Override]
     public function configurePackage(Package $package): void
     {
         $package
@@ -21,10 +23,10 @@ final class SiteStatsServiceProvider extends AbstractPackageServiceProvider
             ->hasTranslations();
     }
 
-    protected function bootInstalledPackage(): self
+    #[Override]
+    protected function bootInstalledRuntime(): void
     {
+        $this->loadTranslationsFrom(__DIR__ . '/../../resources/lang', self::$name);
         $this->surface()->metricCollector(ContentTotalsMetricsCollector::class);
-
-        return $this;
     }
 }
