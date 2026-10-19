@@ -5,6 +5,7 @@ use Capell\Admin\Filament\Pages\SiteAdminMetricsPage;
 use Capell\Core\Models\Page;
 use Capell\Core\Models\Site;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
 it('starts the web session before the local metrics fixture logs in its administrator', function (): void {
@@ -59,6 +60,11 @@ it('repairs fixture domains before creating pages and remains repeatable', funct
         throw new RuntimeException('The workbench requires an authenticatable user model.');
     }
 
+    $previousFixture = getenv('CAPELL_SCREENSHOT_FIXTURE');
+    $previousPath = getenv('CAPELL_SCREENSHOT_APP_PATH');
+    putenv('CAPELL_SCREENSHOT_FIXTURE=record-state');
+    putenv('CAPELL_SCREENSHOT_APP_PATH=' . base_path());
+
     $userClass::query()->firstOrCreate(['email' => 'admin@example.com'], ['name' => 'Screenshot admin', 'password' => bcrypt('screenshot-only')]);
     try {
         foreach (range(1, 2) as $attempt) {
@@ -68,8 +74,12 @@ it('repairs fixture domains before creating pages and remains repeatable', funct
         }
 
         expect(Site::query()->where('name', 'like', 'Site Stats screenshot site %')->count())->toBe(3)
-            ->and(Page::query()->where('name', 'like', 'Site Stats screenshot page %')->count())->toBe(12);
+            ->and(Page::query()->where('name', 'like', 'Site Stats screenshot page %')->count())->toBe(12)
+            ->and(DB::table('screenshot_fixture_receipts')->where('table_name', 'sites')->count())->toBe(3)
+            ->and(DB::table('screenshot_fixture_receipts')->where('table_name', 'pages')->count())->toBe(12);
     } finally {
+        putenv($previousFixture === false ? 'CAPELL_SCREENSHOT_FIXTURE' : 'CAPELL_SCREENSHOT_FIXTURE=' . $previousFixture);
+        putenv($previousPath === false ? 'CAPELL_SCREENSHOT_APP_PATH' : 'CAPELL_SCREENSHOT_APP_PATH=' . $previousPath);
         app()->detectEnvironment(static fn (): string => $originalEnvironment);
     }
 });

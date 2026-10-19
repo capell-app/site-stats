@@ -13,12 +13,15 @@ use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Route;
+use Workbench\App\Actions\AssertScreenshotFixtureEnvironmentAction;
 
 Route::middleware('web')->get('/screenshot-fixtures/site-stats/metrics-dashboard', static function (): RedirectResponse {
     abort_unless(
         app()->isLocal() && in_array(request()->ip(), ['127.0.0.1', '::1'], true),
         404,
     );
+
+    resolve(AssertScreenshotFixtureEnvironmentAction::class)->handle();
 
     $firstDay = CarbonImmutable::now('UTC')->startOfDay()->subDays(6);
     $siteDays = [0, 3, 5];
