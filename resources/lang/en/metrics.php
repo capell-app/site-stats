@@ -5,7 +5,7 @@ declare(strict_types=1);
 return [
     'health' => [
         'collector' => [
-            'label' => 'Site Stats collector',
+            'label' => 'Site Stats: statistics collector available',
             'passed' => 'The privacy-safe content totals collector implements the daily metrics contract.',
             'failed' => 'The content totals collector does not implement the daily metrics contract.',
             'remediation' => 'Restore the Site Stats collector contract before enabling daily metric collection.',

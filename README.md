@@ -91,6 +91,10 @@ Screenshot contract: `docs/screenshots.json`.
 1. Install the package: `composer require capell-app/site-stats`.
 2. Verify the package provider and manifest contributions are registered in the host app.
 
+## Upgrading
+
+No manual steps between minor versions.
+
 ## Next Steps
 
 - [Package docs](docs/README.md)

@@ -37,6 +37,7 @@ final class SiteStatsHealthCheck implements ChecksExtensionHealth
                 remediation: $collectorRegistered
                     ? null
                     : (string) __('capell-site-stats::metrics.health.collector.remediation'),
+                id: 'legacy.site.stats.collector',
             ),
         ]);
     }

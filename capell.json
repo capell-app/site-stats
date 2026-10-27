@@ -6,7 +6,7 @@
     "kind": "package",
     "capellApiVersion": "^1.0",
     "version": "1.0.0",
-    "description": "Site Stats provides privacy-safe page, site, and active domain totals through Capell's typed metrics pipeline.",
+    "description": "Track privacy-safe current-day page, site, active site and active domain totals through Capell's typed metrics pipeline, without collecting visitor analytics.",
     "product": {
         "group": "Capell Foundation",
         "tier": "free",
