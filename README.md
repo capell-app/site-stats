@@ -2,64 +2,45 @@
 
 <!-- prettier-ignore-start -->
 
-## What This Plugin Adds
-
-Site Stats is an **Available**, **No schema impact** Capell package in the **Capell Foundation** product group. It ships as `capell-app/site-stats` and extends these surfaces: shared.
+## What It Does
 
 Site Stats registers privacy-safe current-day page, site, active site, and active domain totals with Capell's typed metrics pipeline.
 
-Authorized global administrators can inspect four retained content-inventory trends through a consuming Core metrics surface without collecting visitor analytics.
+- **Price and availability:** Check current availability and price on the [Capell Marketplace listing](https://capell.app/extensions/site-stats).
+- **Licence:** Published under MIT in `composer.json`.
+- **Requires:** `PHP ^8.4`, `capell-app/core ^1.0.66`, `laravel/framework ^12.41.1|^13.0`, `spatie/laravel-package-tools ^1.14.1`.
+- **Install:** `composer require capell-app/site-stats`.
 
-Status details:
+Authorised global administrators can inspect four retained content-inventory trends through a consuming Core metrics surface without collecting visitor analytics.
 
-- Status: Available
-- Tier: free
-- Bundle: foundation
-- Composer package: `capell-app/site-stats`
-- Namespace: `Capell\SiteStats`
-- Theme key: not applicable
-
-## Why It Matters
+## Who It Is For
 
 **For developers:** The collector uses Core metric definitions, scopes, governance, and daily rollups rather than introducing a package-specific reporting store.
 
 **For teams:** Teams get a simple retained view of content growth without page-view tracking, request logging, or a second analytics dashboard.
 
-## Screens And Workflow
+## Quick Start
 
-Screenshot contract: `docs/screenshots.json`.
+1. Install the package: `composer require capell-app/site-stats`.
+2. Verify the package provider and manifest contributions are registered in the host app.
+
+## Configure
+
+This extension works without configuration. There is nothing to set after install.
+
+## Limits And Pitfalls
+
+- Install the required Capell packages at the versions in `composer.json`: `capell-app/core ^1.0.66`.
+- Custom write integrations must preserve invalidation for `site-stats` cache tags.
+
+## Screens And Workflow
 
 ![Site Stats content totals in the Core metrics dashboard](docs/screenshots/site-stats-metrics-dashboard.png)
 
 ![Site Stats content totals in the Core metrics dashboard with admin sidebar menu open](docs/screenshots/site-stats-admin-sidebar-menu-open.png)
 
-- Site Stats content totals in the Core metrics dashboard (admin, supplementary documentation fixture).
-- Site Stats content totals in the Core metrics dashboard with admin sidebar menu open (admin, supplementary documentation fixture).
-
-## Technical Shape
-
-### Service providers
-
-- `Capell\SiteStats\Providers\SiteStatsServiceProvider`
-
-### Manifest contributions
-
-- `health-check: Capell\SiteStats\Health\SiteStatsHealthCheck`
-
-### Health checks
-
-- `Capell\SiteStats\Health\SiteStatsHealthCheck`
-
-### Cache tags
-
-- `site-stats`
-
-
-## Data Model
-
-- Required tables: `pages`, `sites`, `site_domains`.
-- Migration impact: run host migrations through the package install flow before opening package surfaces.
-- Deletion/retention behaviour: Docs gap: migrations and manifest contributions do not prove a cascade, pruning command, or timed retention policy.
+- Site Stats content totals in the Core metrics dashboard (admin).
+- Site Stats content totals in the Core metrics dashboard with admin sidebar menu open (admin).
 
 ## Install Impact
 
@@ -75,21 +56,11 @@ Screenshot contract: `docs/screenshots.json`.
 - Cache tags: `site-stats`.
 - Commands: none declared.
 
-## Common Pitfalls
-
-- Keep required Capell packages on compatible v4 releases: `capell-app/core`.
-- Custom write integrations must preserve invalidation for `site-stats` cache tags.
-
 ## Troubleshooting
 
 | Symptom | Likely cause | Check | Fix |
 | --- | --- | --- | --- |
 | Package surface is missing after install | Provider or manifest is not loaded | Confirm `capell.json`, package `composer.json`, and provider registration | Reinstall the package, refresh Composer autoload, and clear host caches |
-
-## Quick Start
-
-1. Install the package: `composer require capell-app/site-stats`.
-2. Verify the package provider and manifest contributions are registered in the host app.
 
 ## Upgrading
 
@@ -100,7 +71,7 @@ No manual steps between minor versions.
 - [Package docs](docs/README.md)
 - [Overview](docs/overview.md)
 - [Troubleshooting](#troubleshooting)
-- [Screenshot contract](docs/screenshots.json)
+- [Developer reference](docs/reference.md)
 - [Marketplace assets](docs/assets/marketplace/)
 - [Capell content language plan](../../docs/CONTENT_LANGUAGE_PLAN.md)
 - [Capell documentation design system](../../docs/DESIGN_SYSTEM.md)

@@ -8,7 +8,7 @@
         ]
     },
     "surfaceOutcome": {
-        "text": "Authorized global administrators can inspect four retained content-inventory trends through a consuming Core metrics surface without collecting visitor analytics.",
+        "text": "Authorised global administrators can inspect four retained content-inventory trends through a consuming Core metrics surface without collecting visitor analytics.",
         "evidence": [
             "docs/screenshots/site-stats-metrics-dashboard.png",
             "src/Health/SiteStatsHealthCheck.php",

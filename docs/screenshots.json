@@ -23,7 +23,7 @@
             "screenshotPath": "packages/site-stats/docs/screenshots/site-stats-metrics-dashboard.png",
             "fixtureKind": "host-integration-diagnostic",
             "notes": "Diagnostic host-integration capture from the consuming Core metrics dashboard with capell-app/site-stats installed. It cannot be promoted as package-owned product evidence because Site Stats intentionally ships no dashboard or public UI.",
-            "useCase": "An administrator verifies that the installed Site Stats collector supplies page and site inventory history to Capell's shared metrics dashboard.",
+            "useCase": "Daily totals of pages and sites over time on the Capell metrics dashboard.",
             "covers": [
                 "packages/site-stats/src/Metrics/ContentTotalsMetricsCollector.php"
             ]
@@ -43,7 +43,7 @@
             "screenshotPath": "packages/site-stats/docs/screenshots/site-stats-admin-sidebar-menu-open.png",
             "fixtureKind": "host-integration-diagnostic",
             "notes": "Diagnostic host-integration capture from the consuming Core metrics dashboard with capell-app/site-stats installed. It cannot be promoted as package-owned product evidence because Site Stats intentionally ships no dashboard or public UI. Capture this same diagnostic surface with the fully collapsible sidebar opened.",
-            "useCase": "An administrator verifies that the installed Site Stats collector supplies page and site inventory history to Capell's shared metrics dashboard.",
+            "useCase": "Daily totals of pages and sites over time on the Capell metrics dashboard.",
             "covers": [
                 "packages/site-stats/src/Metrics/ContentTotalsMetricsCollector.php"
             ],
