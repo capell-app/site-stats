@@ -6,12 +6,18 @@ namespace Capell\SiteStats\Health;
 
 use Capell\Core\Contracts\Extensions\ChecksExtensionHealth;
 use Capell\Core\Data\Diagnostics\DoctorCheckResultData;
+use Capell\Core\Enums\Metrics\MetricCollectionRunStatus;
+use Capell\Core\Models\MetricCollectionRun;
 use Capell\Core\Support\Metrics\MetricCollectorRegistry;
 use Capell\SiteStats\Metrics\ContentTotalsMetricsCollector;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Collection;
 
 final class SiteStatsHealthCheck implements ChecksExtensionHealth
 {
+    /** The collection runs hourly; a day without a completed run means nothing is running it. */
+    private const int STALE_AFTER_HOURS = 24;
+
     public static function compatibleCapellApiVersion(): string
     {
         return '^1.0';
@@ -27,7 +33,26 @@ final class SiteStatsHealthCheck implements ChecksExtensionHealth
                 static fn (object $collector): bool => $collector instanceof ContentTotalsMetricsCollector,
             );
 
+        $lastCompletedAt = MetricCollectionRun::query()
+            ->where('owner_package', ContentTotalsMetricsCollector::OWNER)
+            ->where('collector_key', ContentTotalsMetricsCollector::COLLECTOR)
+            ->where('status', MetricCollectionRunStatus::Completed)
+            ->max('completed_at');
+        $collecting = is_string($lastCompletedAt)
+            && CarbonImmutable::parse($lastCompletedAt, 'UTC')->greaterThanOrEqualTo(CarbonImmutable::now('UTC')->subHours(self::STALE_AFTER_HOURS));
+
         return collect([
+            new DoctorCheckResultData(
+                label: (string) __('capell-site-stats::metrics.health.collection.label'),
+                passed: $collecting,
+                message: $collecting
+                    ? (string) __('capell-site-stats::metrics.health.collection.passed')
+                    : (string) __('capell-site-stats::metrics.health.collection.failed', ['hours' => self::STALE_AFTER_HOURS]),
+                remediation: $collecting
+                    ? null
+                    : (string) __('capell-site-stats::metrics.health.collection.remediation'),
+                id: 'site.stats.collection',
+            ),
             new DoctorCheckResultData(
                 label: (string) __('capell-site-stats::metrics.health.collector.label'),
                 passed: $collectorRegistered,

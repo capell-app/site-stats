@@ -5,14 +5,17 @@
         "default": {
             "source": {
                 "ref": "HEAD",
-                "commit": "adac26b4ce1e9e1de545f68a1ff272ff73111696",
+                "commit": "47d5e4e651171805cc9df3254cc1daf6a47a81e5",
                 "providers": {
-                    "Providers/SiteStatsServiceProvider.php": "a52ce6ffd3d20be1e0dfaed974b1f278de0dcc73cd1b9565bd378f0b37c754c5"
+                    "Providers/SiteStatsServiceProvider.php": "668d97ca952d334e5c9f4c8e45cc245a114644ad1a7f6d10507ab9ea90f0b6bc"
                 },
                 "configure": null
             },
             "disabledContributions": [],
             "surfaces": {
+                "commands": {
+                    "capell:site-stats:collect": "Capell\\SiteStats\\Console\\Commands\\CollectSiteStatsCommand"
+                },
                 "config-values": {
                     "app.providers": [
                         "Capell\\SiteStats\\Providers\\SiteStatsServiceProvider"
@@ -252,9 +255,21 @@
                             }
                         }
                     }
-                }
+                },
+                "schedule": [
+                    [
+                        "'<php>' 'artisan' capell:site-stats:collect",
+                        "0 * * * *",
+                        null,
+                        true,
+                        null
+                    ]
+                ]
             },
             "uninstalledSurfaces": {
+                "commands": {
+                    "capell:site-stats:collect": "Capell\\SiteStats\\Console\\Commands\\CollectSiteStatsCommand"
+                },
                 "config-values": {
                     "app.providers": [
                         "Capell\\SiteStats\\Providers\\SiteStatsServiceProvider"

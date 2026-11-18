@@ -6,7 +6,7 @@
     "kind": "package",
     "capellApiVersion": "^1.0",
     "version": "1.0.0",
-    "description": "Track privacy-safe current-day page, site, active site and active domain totals through Capell's typed metrics pipeline, without collecting visitor analytics.",
+    "description": "Counts your pages, sites, active sites and active domains every hour and keeps a daily record for global administrators.",
     "product": {
         "group": "Capell Essentials",
         "tier": "free",
@@ -30,6 +30,12 @@
         {
             "type": "health-check",
             "class": "Capell\\SiteStats\\Health\\SiteStatsHealthCheck"
+        },
+        {
+            "type": "scheduled-job",
+            "class": "Capell\\SiteStats\\Manifest\\SiteStatsCollectionScheduleContribution",
+            "command": "capell:site-stats:collect",
+            "frequency": "hourly"
         }
     ],
     "database": {
@@ -41,7 +47,8 @@
         "install": null,
         "setup": null,
         "demo": null,
-        "doctor": null
+        "doctor": null,
+        "collect": "capell:site-stats:collect"
     },
     "actions": [],
     "settings": [],
@@ -108,22 +115,26 @@
         "privateDocsRequested": false
     },
     "marketplace": {
-        "summary": "Records daily page, site and domain totals for Capell's metrics pipeline. It has no screens of its own; Core's metrics views show the data.",
-        "description": "Registers current-day global page, site, active site, and active domain totals with Capell's shared typed metrics pipeline. Site Stats owns no dashboard or public UI; installed Core metrics consumers can display the retained daily series. Install it when you want these totals recorded; they appear in Core's metrics views, not in a Site Stats screen.",
-        "problem": "Administrators lack a view of how their content inventory changes over time.",
-        "outcome": "Global administrators have content inventory trends available through a Core metrics surface.",
+        "summary": "Keeps a daily count of pages, sites, active sites and active domains and shows each as a 30-day line on the Site metrics page.",
+        "description": "Each hour it counts the pages, sites, active sites and active domains in your own content. The last count of each day is kept, and global administrators see the latest figures with a 30-day line on the Site metrics page. A day your scheduled tasks miss has no figure, and the health check flags it. Nothing about visitors is read.",
+        "problem": "Nobody can say how many pages, sites and domains an install holds, or whether those numbers are growing.",
+        "outcome": "Global administrators see the latest totals and a 30-day line for each on the Site metrics page.",
         "faq": [
             {
-                "question": "What does site stats count?",
-                "answer": "It registers current-day page, site, active site and active domain totals."
+                "question": "What does Site Stats count?",
+                "answer": "Each hour it counts your pages, sites, active sites and active domains and keeps the last count of each day."
             },
             {
-                "question": "Who can inspect the trends?",
-                "answer": "Authorised global administrators can inspect them through a consuming Core metrics surface."
+                "question": "Who can see the figures?",
+                "answer": "Global administrators, on the Site metrics page in the Capell admin. Someone who looks after a single site never sees totals for the rest."
             },
             {
                 "question": "Does it collect visitor analytics?",
-                "answer": "No. The retained trends describe content inventory without collecting visitor analytics."
+                "answer": "No. It only counts your own pages, sites and domains, reads nothing about visitors, and nothing leaves your server."
+            },
+            {
+                "question": "What happens on a day the counting does not run?",
+                "answer": "That day has no figure, and it cannot be added later because a count only describes what exists right now. The health check flags a gap of 24 hours without a count."
             }
         ],
         "screenshots": [],

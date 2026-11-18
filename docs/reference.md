@@ -6,7 +6,7 @@ Developer reference for `capell-app/site-stats`. Start with the [README](../READ
 
 ## Package Details
 
-Site Stats is an **Available**, **No schema impact** Capell package in the **Capell Essentials** product group. It ships as `capell-app/site-stats` and extends these surfaces: shared.
+Site Stats is an **Available** Capell package in the **Capell Essentials** product group. It ships as `capell-app/site-stats` and extends these surfaces: shared.
 
 - Status: Available
 - Tier: free
@@ -21,9 +21,22 @@ Site Stats is an **Available**, **No schema impact** Capell package in the **Cap
 
 - `Capell\SiteStats\Providers\SiteStatsServiceProvider`
 
+### Command signatures
+
+- `capell:site-stats:collect`
+
+### Scheduled commands
+
+- `capell:site-stats:collect (hourly; package registered)`
+
+### Console command classes
+
+- `CollectSiteStatsCommand`
+
 ### Manifest contributions
 
 - `health-check: Capell\SiteStats\Health\SiteStatsHealthCheck`
+- `scheduled-job: Capell\SiteStats\Manifest\SiteStatsCollectionScheduleContribution`
 
 ### Health checks
 

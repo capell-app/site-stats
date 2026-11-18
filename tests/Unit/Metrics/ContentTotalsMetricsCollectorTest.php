@@ -6,6 +6,7 @@ use Capell\Core\Data\Metrics\MetricSampleData;
 use Capell\Core\Data\Metrics\MetricScopeData;
 use Capell\Core\Enums\Metrics\MetricBackfillPolicy;
 use Capell\Core\Enums\Metrics\MetricCollectionStatus;
+use Capell\Core\Enums\Metrics\MetricVisibility;
 use Capell\SiteStats\Health\SiteStatsHealthCheck;
 use Capell\SiteStats\Metrics\ContentTotalsMetricsCollector;
 use Carbon\CarbonImmutable;
@@ -13,8 +14,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 it('reports a healthy collector contract', function (): void {
-    expect(SiteStatsHealthCheck::passed())->toBeTrue()
-        ->and(SiteStatsHealthCheck::runDiagnostics())->toHaveCount(1);
+    $collector = SiteStatsHealthCheck::runDiagnostics()->firstWhere('id', 'legacy.site.stats.collector');
+
+    expect(SiteStatsHealthCheck::runDiagnostics())->toHaveCount(2)
+        ->and($collector?->passed)->toBeTrue();
 });
 
 it('publishes current-day-only global metric definitions', function (): void {
@@ -29,7 +32,8 @@ it('publishes current-day-only global metric definitions', function (): void {
         ]);
 
     foreach ($definitions as $definition) {
-        expect($definition->semantics->backfillPolicy)->toBe(MetricBackfillPolicy::CurrentDayOnly);
+        expect($definition->semantics->backfillPolicy)->toBe(MetricBackfillPolicy::CurrentDayOnly)
+            ->and($definition->governance->visibility)->toBe(MetricVisibility::SiteAdmin);
     }
 });
 

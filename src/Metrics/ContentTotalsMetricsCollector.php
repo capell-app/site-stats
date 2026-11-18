@@ -32,9 +32,9 @@ use Carbon\CarbonImmutable;
 
 final class ContentTotalsMetricsCollector implements CollectsDailyMetrics
 {
-    private const string Owner = 'capell-app/site-stats';
+    public const string OWNER = 'capell-app/site-stats';
 
-    private const string Collector = 'content_totals';
+    public const string COLLECTOR = 'content_totals';
 
     /** @return list<MetricDefinitionData> */
     public function definitions(): array
@@ -164,7 +164,7 @@ final class ContentTotalsMetricsCollector implements CollectsDailyMetrics
     private function definition(string $metric, string $label, string $description): MetricDefinitionData
     {
         return new MetricDefinitionData(
-            identity: new MetricIdentityData(self::Owner, self::Collector, $metric),
+            identity: new MetricIdentityData(self::OWNER, self::COLLECTOR, $metric),
             representation: new MetricRepresentationData(MetricUnitEnum::Count, MetricValueType::Integer),
             scopeType: MetricScopeType::Global,
             semantics: new MetricSemanticsData(

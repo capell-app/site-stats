@@ -1,6 +1,6 @@
 {
     "name": "capell-app/site-stats",
-    "description": "Simple content totals and metric trends for Capell sites.",
+    "description": "Counts pages, sites, active sites and active domains each hour and keeps a daily record for the Capell admin.",
     "type": "library",
     "license": "MIT",
     "autoload": {

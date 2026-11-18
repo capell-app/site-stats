@@ -4,6 +4,12 @@ declare(strict_types=1);
 
 return [
     'health' => [
+        'collection' => [
+            'label' => 'Site Stats: totals are being recorded',
+            'passed' => 'Today\'s content totals were recorded within the last day.',
+            'failed' => 'No content totals have been recorded in the last :hours hours, so the Site Stats series have gaps for those days.',
+            'remediation' => 'Make sure the scheduler runs `php artisan schedule:run` every minute, then run `php artisan capell:site-stats:collect` to record today. Days that were missed cannot be filled in later.',
+        ],
         'collector' => [
             'label' => 'Site Stats: statistics collector available',
             'passed' => 'The privacy-safe content totals collector implements the daily metrics contract.',

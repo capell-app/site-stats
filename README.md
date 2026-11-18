@@ -2,35 +2,36 @@
 
 <!-- prettier-ignore-start -->
 
-## What It Does
+Once you look after more than a handful of sites, it gets hard to say how many pages you have or how many domains are switched on. Site Stats counts them every hour and keeps one figure for each UTC day, so you can see whether the numbers are going up.
 
-Site Stats registers privacy-safe current-day page, site, active site, and active domain totals with Capell's typed metrics pipeline.
+There are four totals. Pages counts every page that hasn't been deleted, drafts included. Sites counts the same way, and active sites are the ones switched on. Active domains are the switched-on domains attached to an active site. Only global administrators can see the figures, so someone who looks after a single site never sees totals for the rest.
+
+The counting runs from your server's Laravel scheduler, which needs to be running. The last count of each day is the one kept. A count can only describe what exists right now, so a day the scheduler missed has no figure and can't be added later. The health check flags that, both before the first count and whenever 24 hours pass without one. Nothing about visitors is read and nothing leaves your server.
+
+When the first count has run, the Site metrics page in the Capell admin shows a card for each total with its latest figure and a 30-day line.
 
 - **Price and availability:** Check current availability and price on the [Capell Marketplace listing](https://capell.app/extensions/site-stats).
 - **Licence:** Published under MIT in `composer.json`.
 - **Requires:** `PHP ^8.4`, `capell-app/core ^1.0.66`, `laravel/framework ^12.41.1|^13.0`, `spatie/laravel-package-tools ^1.14.1`.
 - **Install:** `composer require capell-app/site-stats`.
 
-Authorised global administrators can inspect four retained content-inventory trends through a consuming Core metrics surface without collecting visitor analytics.
-
-## Who It Is For
-
-**For developers:** The collector uses Core metric definitions, scopes, governance, and daily rollups rather than introducing a package-specific reporting store.
-
-**For teams:** Teams get a simple retained view of content growth without page-view tracking, request logging, or a second analytics dashboard.
-
 ## Quick Start
 
 1. Install the package: `composer require capell-app/site-stats`.
-2. Verify the package provider and manifest contributions are registered in the host app.
+2. Run `php artisan list` and verify the package command signatures are registered.
+
+## For Developers
+
+The collector uses Core metric definitions, scopes, governance, and daily rollups rather than introducing a package-specific reporting store.
 
 ## Configure
 
-This extension works without configuration. There is nothing to set after install.
+- **Commands:** `php artisan capell:site-stats:collect`.
 
 ## Limits And Pitfalls
 
 - Install the required Capell packages at the versions in `composer.json`: `capell-app/core ^1.0.66`.
+- Keep the host Laravel scheduler running so package-registered schedules can execute: `capell:site-stats:collect (hourly; package registered)`.
 - Custom write integrations must preserve invalidation for `site-stats` cache tags.
 
 ## Screens And Workflow
@@ -52,15 +53,16 @@ This extension works without configuration. There is nothing to set after instal
 - Database changes: no package migrations declared.
 - Config: no package config files.
 - Settings: no package settings declared.
-- Queues or schedules: none declared.
+- Queues or schedules: scheduled commands `capell:site-stats:collect (hourly; package registered)`.
 - Cache tags: `site-stats`.
-- Commands: none declared.
+- Commands: `capell:site-stats:collect`.
 
 ## Troubleshooting
 
 | Symptom | Likely cause | Check | Fix |
 | --- | --- | --- | --- |
 | Package surface is missing after install | Provider or manifest is not loaded | Confirm `capell.json`, package `composer.json`, and provider registration | Reinstall the package, refresh Composer autoload, and clear host caches |
+| Background work does not run | Queue worker or declared schedule is not active | Check the jobs and scheduled commands listed in `Technical Shape` | Start the queue worker or host scheduler, then run the focused command or package test |
 
 ## Upgrading
 

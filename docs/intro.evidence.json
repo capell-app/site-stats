@@ -1,0 +1,63 @@
+[
+    {
+        "claim": "Pages and sites count every row that has not been deleted, drafts included; active sites are the ones switched on; active domains are switched-on domains attached to an active site",
+        "evidence": [
+            "src/Metrics/ContentTotalsMetricsCollector.php",
+            "resources/lang/en/metrics.php",
+            "tests/Unit/Metrics/ContentTotalsMetricsCollectorTest.php"
+        ]
+    },
+    {
+        "claim": "The count runs every hour from the server's Laravel scheduler, which must be running",
+        "evidence": [
+            "src/Providers/SiteStatsServiceProvider.php",
+            "src/Console/Commands/CollectSiteStatsCommand.php",
+            "src/Manifest/SiteStatsCollectionScheduleContribution.php",
+            "tests/Feature/SiteStatsCollectionScheduleTest.php"
+        ]
+    },
+    {
+        "claim": "The last count of each day is the one kept, because a later run on the same day replaces that day's totals",
+        "evidence": [
+            "src/Console/Commands/CollectSiteStatsCommand.php",
+            "tests/Feature/SiteStatsCollectionScheduleTest.php"
+        ]
+    },
+    {
+        "claim": "Only the current day can be counted, so a day without a run stays blank and cannot be filled in afterwards",
+        "evidence": [
+            "src/Metrics/ContentTotalsMetricsCollector.php",
+            "tests/Unit/Metrics/ContentTotalsMetricsCollectorTest.php"
+        ]
+    },
+    {
+        "claim": "The health check flags no count before the first run and again once 24 hours pass without a completed count",
+        "evidence": [
+            "src/Health/SiteStatsHealthCheck.php",
+            "resources/lang/en/metrics.php",
+            "tests/Feature/SiteStatsCollectionScheduleTest.php"
+        ]
+    },
+    {
+        "claim": "The totals appear as one card each on the Site metrics page with the latest figure and a 30-day line, as the screenshot shows",
+        "evidence": [
+            "src/Metrics/ContentTotalsMetricsCollector.php",
+            "docs/screenshots/site-stats-metrics-dashboard.png"
+        ]
+    },
+    {
+        "claim": "Counts come only from pages, sites and domains in the database, with no visitor data and no outside service",
+        "evidence": [
+            "src/Metrics/ContentTotalsMetricsCollector.php",
+            "capell.json",
+            "composer.json"
+        ]
+    },
+    {
+        "claim": "Only global administrators can see the figures",
+        "evidence": [
+            "src/Metrics/ContentTotalsMetricsCollector.php",
+            "tests/Unit/Metrics/ContentTotalsMetricsCollectorTest.php"
+        ]
+    }
+]

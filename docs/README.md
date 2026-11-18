@@ -1,6 +1,6 @@
 # Site Stats Docs
 
-Site Stats supplies privacy-safe current-day page and site totals to Capell's shared metrics pipeline.
+Site Stats counts pages, sites, active sites and active domains each hour and keeps a daily record that global administrators see on the Site metrics page.
 
 Start with the [package README](../README.md) for installation and contract details.
 

@@ -72,6 +72,6 @@ it('keeps Core-owned persistence and scheduling out of the package manifest', fu
         ->and(data_get($manifest, 'commands.setup'))->toBeNull()
         ->and(data_get($manifest, 'contributionTraceability.runtimeIntegrations.metricCollectors'))
         ->toContain(ContentTotalsMetricsCollector::class)
-        ->and(data_get($manifest, 'description'))->toContain("Capell's typed metrics pipeline")
-        ->and(data_get($manifest, 'marketplace.description'))->toContain('Site Stats owns no dashboard or public UI');
+        ->and(data_get($manifest, 'description'))->toContain('active domains')
+        ->and(data_get($manifest, 'marketplace.description'))->toContain('Nothing about visitors is read');
 });
