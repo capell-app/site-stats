@@ -2,9 +2,11 @@
 
 declare(strict_types=1);
 
+use Capell\Core\Actions\Metrics\RollupDailyMetricsAction;
 use Capell\Core\Enums\Metrics\MetricCollectionRunStatus;
 use Capell\Core\Models\MetricCollectionRun;
 use Capell\Core\Models\MetricDailyRollup;
+use Capell\Core\Support\Metrics\MetricCollectorRegistry;
 use Capell\SiteStats\Health\SiteStatsHealthCheck;
 use Carbon\CarbonImmutable;
 use Illuminate\Console\Scheduling\Event;
@@ -40,6 +42,18 @@ it('collects again later the same day, replacing that day\'s totals', function (
     $this->artisan('capell:site-stats:collect')->assertSuccessful();
 
     expect(MetricDailyRollup::query()->where('owner_package', 'capell-app/site-stats')->count())->toBe(4);
+});
+
+it('fails when the collector does not run, even though an earlier run today completed', function (): void {
+    CarbonImmutable::setTestNow('2026-07-21 09:00:00 UTC');
+    $this->artisan('capell:site-stats:collect')->assertSuccessful();
+
+    CarbonImmutable::setTestNow('2026-07-21 10:00:00 UTC');
+    // A registry without the collector: nothing starts, so only the 09:00 run exists for today.
+    $this->app->singleton(MetricCollectorRegistry::class, fn ($app): MetricCollectorRegistry => new MetricCollectorRegistry($app));
+    $this->app->forgetInstance(RollupDailyMetricsAction::class);
+
+    $this->artisan('capell:site-stats:collect')->assertFailed();
 });
 
 it('schedules the collection hourly so a normal install records each day', function (): void {

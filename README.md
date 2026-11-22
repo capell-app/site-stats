@@ -10,14 +10,14 @@ The counting runs from your server's Laravel scheduler, which needs to be runnin
 
 When the first count has run, the Site metrics page in the Capell admin shows a card for each total with its latest figure and a 30-day line.
 
-- **Price and availability:** Check current availability and price on the [Capell Marketplace listing](https://capell.app/extensions/site-stats).
+- **Price and availability:** Check current availability and price on the [Capell Marketplace listing](https://capell.app/marketplace/extensions/site-stats).
 - **Licence:** Published under MIT in `composer.json`.
 - **Requires:** `PHP ^8.4`, `capell-app/core ^1.0.66`, `laravel/framework ^12.41.1|^13.0`, `spatie/laravel-package-tools ^1.14.1`.
-- **Install:** `composer require capell-app/site-stats`.
+- **Install:** `composer require capell-app/site-stats:@beta`.
 
 ## Quick Start
 
-1. Install the package: `composer require capell-app/site-stats`.
+1. Install the package: `composer require capell-app/site-stats:@beta`.
 2. Run `php artisan list` and verify the package command signatures are registered.
 
 ## For Developers

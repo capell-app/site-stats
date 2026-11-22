@@ -1,7 +1,8 @@
 {
     "package": "site-stats",
     "composerName": "capell-app/site-stats",
-    "generatedFor": "deployment-screenshot-runner",
+    "generatedFor": "shared-capell-screenshot-runner",
+    "provenancePolicy": "runner-only-v1",
     "requiresInstalledPackage": true,
     "composerRequires": ["capell-app/site-stats"],
     "outputDirectory": "packages/site-stats/docs/screenshots",

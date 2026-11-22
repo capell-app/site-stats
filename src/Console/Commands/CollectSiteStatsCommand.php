@@ -25,7 +25,8 @@ final class CollectSiteStatsCommand extends Command
 
     public function handle(RollupDailyMetricsAction $rollup): int
     {
-        $day = CarbonImmutable::now('UTC')->toDateString();
+        $startedAt = CarbonImmutable::now('UTC')->startOfSecond();
+        $day = $startedAt->toDateString();
 
         $written = $rollup->execute(
             day: $day,
@@ -40,10 +41,14 @@ final class CollectSiteStatsCommand extends Command
             ->latest('id')
             ->first();
 
-        if (! $run instanceof MetricCollectionRun || $run->status !== MetricCollectionRunStatus::Completed) {
+        // An earlier completed run for today must not vouch for this one: if the collector is not
+        // registered nothing starts, and the last run's success would hide that.
+        $ranNow = $run instanceof MetricCollectionRun && ! $run->started_at->lessThan($startedAt);
+
+        if (! $ranNow || $run->status !== MetricCollectionRunStatus::Completed) {
             $this->components->error(sprintf(
                 'Site Stats could not record today\'s totals: %s',
-                $run instanceof MetricCollectionRun && $run->error_summary !== null ? $run->error_summary : 'the collector did not run.',
+                $ranNow && $run->error_summary !== null ? $run->error_summary : 'the collector did not run.',
             ));
 
             return self::FAILURE;
