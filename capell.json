@@ -6,6 +6,7 @@
     "kind": "package",
     "capellApiVersion": "^1.0",
     "version": "1.0.0",
+    "launchStatus": "shipped",
     "description": "Counts your pages, sites, active sites and active domains every hour and keeps a daily record for global administrators.",
     "product": {
         "group": "Capell Essentials",
